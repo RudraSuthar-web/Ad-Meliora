@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+  }
+  
+  .glass-card {
+    background: rgba(27, 32, 34, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glass-card:hover {
+    border-color: rgba(112, 212, 239, 0.3);
+    box-shadow: 0 0 40px rgba(112, 212, 239, 0.05);
+  }
+  
+  .hero-glow {
+    background: radial-gradient(circle at 30% 20%, rgba(112, 212, 239, 0.15) 0%, transparent 50%);
+  }
+  
+  .text-mask-nature {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuA9h5iZh1Nph3jEFxwalsJ4j-w7ZgqsHjpWaVIzxRzC-jbCn4AX4lHfPVNYZfvYzcXnlbaKFBwXuAf7xcKObR1pSnwF5zMHjoqPMb2lcL-cxjy1W34qAZkemr2hxyUrpIdJ-56BRDrlHNvNiGhhEJAU1bQR9JzlPQL0fkJNJHLtU1lKbTzCAN9zrMeFokUrTRRlTDTa59ShtmflwxVxBN7-MUQTFD7ROnJSrr1_YXgyzyz3QTzNuK_7xkPWr0qJCU6QpTyg9d1itIw);
+    background-size: cover;
+    background-position: center;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: contrast(1.2) brightness(0.8);
+  }
+  
+  .node-pulse {
+    animation: pulse-glow 3s infinite ease-in-out;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+  } 
+  50% {
+      opacity: 1;
+      transform: scale(1.1);
+  }
+}
