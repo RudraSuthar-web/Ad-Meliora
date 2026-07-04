@@ -1,4 +1,6 @@
 frontend/node_modules/
 .next
+dev/
 frontend/.next
+fronten
 frontend/.env.local
