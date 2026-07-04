@@ -1,226 +1,463 @@
-import React from 'react';
+'use client';
+import React, { useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Page() {
+
+  // Scroll reveal
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Parallax tilt on mascot
+  useEffect(() => {
+    const frame = document.getElementById('mascot-frame');
+    if (!frame) return;
+    const handleMove = (e) => {
+      const rect = frame.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / window.innerWidth;
+      const dy = (e.clientY - cy) / window.innerHeight;
+      frame.style.transform = `perspective(900px) rotateY(${dx * 6}deg) rotateX(${-dy * 4}deg)`;
+    };
+    const handleLeave = () => { frame.style.transform = 'perspective(900px) rotateY(0) rotateX(0)'; };
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseleave', handleLeave);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseleave', handleLeave);
+    };
+  }, []);
+
   return (
     <main>
-      {/* Hero Section */}
-      <header className="relative min-h-screen flex flex-col items-center pt-32 sm:pt-40 md:pt-60 px-margin-mobile hero-glow">
-        <div className="max-w-container-max mx-auto text-center z-10">
-          <h1 className="font-display-lg text-[36px] sm:text-[48px] md:text-display-lg text-on-surface mb-8 max-w-4xl mx-auto leading-tight">
-            An AI Automation Partner for Enterprises Ready to Scale
-          </h1>
-          <p className="font-body-lg text-body-md md:text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">
-            Engineering precision intelligence into every layer of your operations. From strategic planning to neural transformation, we bridge the gap between concept and scale.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/book-consultation" className="bg-primary text-on-primary px-8 py-4 rounded-full font-display-md text-body-md hover:shadow-lg transition-all">
-              Book Consultation
-            </Link>
-            <button className="border border-outline-variant text-on-surface px-8 py-4 rounded-full font-body-lg text-body-md hover:bg-white/5 transition-all">
-              View Services
-            </button>
-          </div>
-        </div>
-        
-      
-      </header>
 
-      
+      {/* ═══════════ HERO ═══════════ */}
+      <section className="relative pt-36 pb-24 md:pt-52 md:pb-36 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto overflow-visible">
 
-      {/* Strategy Quote */}
-      <section id="about" className="py-section-gap-mobile md:py-section-gap-desktop px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-        <div className="flex flex-col md:flex-row gap-gutter items-start">
-          <div className="md:w-1/3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-outline-variant bg-surface-variant/30">
-              <span className="material-symbols-outlined text-[14px] text-tertiary">star</span>
-              <span className="text-label-sm font-label-sm uppercase text-on-surface-variant">About Us</span>
-            </div>
-          </div>
-          <div className="md:w-2/3">
-            <h2 className="font-body-lg text-[28px] sm:text-[36px] md:text-[40px] leading-tight text-on-surface">
-              Great companies are built on clear decisions. We combine <span className="text-primary italic">strategic insight</span>, operational expertise, and modern technology to help businesses move faster.
-            </h2>
-            <div className="mt-12 flex items-center gap-3">
-              <div className="flex -space-x-3">
-                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVB9TGUjV6usINL39Im59VhVQCsv7PlOC6IQanEghaW839SwDrkdbpop_mLlo5Lq4yKEmyA4cUl4LceYpxEJCcCSShKwhc5Z8T8APyAtJR_o7uugQbB1HDeZJZeBZPa5elPRrywmz4HEPfwdr5ADFyIYa2KoFaT1fp8Q2cRGdn806JohIgaZ_B6mowCTwVHJ37aw6EiRUdzeRJ1QeDcUZ0vwwuBcIrypPYziAvnRY-xq2CGzW-GNN_hD8tycOJtPqQYHZuDSPqlAY"/>
-                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEFeMyAsGNw2gofBLyz-BuIZdIiQXMypuih2nXMt6GOMOVAOBg2boD-RChvi5_ABqSakgWE5-nmmnbRgSew80BTpZwkqa_aJH9Jwsvlf7Sf-l7SZtmiEJvvo4Wvej38pLdGq9DBDi6YAr5GJkB-VVO4K5g3VOyr3SZxDO_xXJ7Tx62EgIe-neSxJnXFhnqXkG0mZq07yPd2Gv4JJAKnHhUsCDEJpSo_9a245JI2OxtSJWC9bu1x4MHKvVhdMZ9_AN-Gu0epiWWeXc"/>
-                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACppE_2iXbxTigrSvCTQ8EtqFRaYPrFj1jVThMnQhV2g8k8HO5Ec7Y4xosIswUdowWa9CmMNVzJOrhhXNQiw3MVmqwiU1eA_ZfB1Upg0JalsqcLvaBgjMddCOPXiGVgxxncUE8GnUIKXV9N6dchoYfnxK2rWwGlb-wTDwZkv1Dm0F_wjqGBY-xVEJ_5zgkZugCH_hWWyz1sYadCWCuWCkfmmr76SBm9vZl_zMdnLsT1_5bQaHxsqGNBMyi-SxXD9a7d5Kh1aO4j6M"/>
-              </div>
-              <span className="text-on-surface-variant font-label-sm text-label-sm">Chosen by 60+ companies worldwide</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        {/* Ambient glows */}
+        <div className="teal-glow absolute -top-20 -left-40 w-[600px] h-[600px] -z-10 opacity-70 pointer-events-none" />
+        <div className="gold-glow absolute top-1/2 right-0 w-[400px] h-[400px] -z-10 opacity-60 pointer-events-none" />
 
-      {/* Pricing/Service Tiers */}
-      <section id="solutions" className="py-section-gap-mobile md:py-section-gap-desktop bg-surface-container-lowest">
-        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-20 gap-4 md:gap-8">
-            <div>
-              <span className="text-primary font-label-sm uppercase tracking-widest block mb-4">Pricing Plan</span>
-              <h2 className="font-display-md text-[32px] sm:text-[40px] md:text-display-md text-on-surface leading-tight">Built for Every Stage of Growth.</h2>
-            </div>
-            <p className="text-on-surface-variant max-w-sm text-left md:text-right font-body-md">
-              From early clarity to full-scale execution, our services are designed to support your business as it evolves.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {/* Card 1 */}
-            <div className="glass-card p-6 sm:p-8 md:p-10 rounded-[32px] flex flex-col">
-              <div className="mb-8 w-12 h-12 rounded-xl bg-surface-variant flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary">analytics</span>
-              </div>
-              <h3 className="font-display-md text-headline-lg mb-4 text-on-surface">Growth Blueprint</h3>
-              <p className="text-on-surface-variant text-body-md mb-8">For founders who feel stuck between ideas and execution. We help you define.</p>
-              <div className="mb-10">
-                <span className="text-display-md font-display-md text-on-surface">$2.500</span>
-                <span className="text-on-surface-variant text-label-sm ml-2">/ project</span>
-              </div>
-              <ul className="space-y-4 mb-12 flex-grow">
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Deep business &amp; market breakdown
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Clear growth priorities
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Strategic roadmap tailored to your stage
-                </li>
-              </ul>
-              <Link href="/book-consultation" className="block text-center w-full py-4 rounded-2xl border border-outline-variant text-on-surface hover:bg-primary hover:text-on-primary transition-all">Get Started</Link>
-            </div>
-            {/* Card 2 - Featured */}
-            <div className="glass-card p-6 sm:p-8 md:p-10 rounded-[32px] flex flex-col border-primary/30 relative overflow-hidden bg-surface-container-high">
-              <div className="absolute top-0 right-0 px-6 py-2 bg-primary text-on-primary font-label-sm rounded-bl-2xl uppercase">Most Popular</div>
-              <div className="mb-8 w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary">hub</span>
-              </div>
-              <h3 className="font-display-md text-headline-lg mb-4 text-on-surface">Scale Systems</h3>
-              <p className="text-on-surface-variant text-body-md mb-8">Growth breeds messy systems. We redesign your operations, workflows, and tools.</p>
-              <div className="mb-10">
-                <span className="text-display-md font-display-md text-on-surface">$5.000</span>
-                <span className="text-on-surface-variant text-label-sm ml-2">/ project</span>
-              </div>
-              <ul className="space-y-4 mb-12 flex-grow">
-                <li className="flex items-center gap-3 text-body-md text-on-surface">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Full operations &amp; workflow audit
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Process simplification &amp; optimization
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Tooling &amp; system recommendations
-                </li>
-              </ul>
-              <Link href="/book-consultation" className="block text-center w-full py-4 rounded-2xl bg-primary text-on-primary font-display-md shadow-[0_0_30px_rgba(112,212,239,0.3)] hover:scale-[1.02] transition-all">Get Started</Link>
-            </div>
-            {/* Card 3 */}
-            <div className="glass-card p-6 sm:p-8 md:p-10 rounded-[32px] flex flex-col">
-              <div className="mb-8 w-12 h-12 rounded-xl bg-surface-variant flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary">groups</span>
-              </div>
-              <h3 className="font-display-md text-headline-lg mb-4 text-on-surface">Growth Partner</h3>
-              <p className="text-on-surface-variant text-body-md mb-8">To just advise isn't enough. We work closely with your team to continuously refine strategy.</p>
-              <div className="mb-10">
-                <span className="text-display-md font-display-md text-on-surface">$2.000</span>
-                <span className="text-on-surface-variant text-label-sm ml-2">/ month</span>
-              </div>
-              <ul className="space-y-4 mb-12 flex-grow">
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Ongoing strategy &amp; growth advisory
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Weekly or bi-weekly working sessions
-                </li>
-                <li className="flex items-center gap-3 text-body-md text-on-surface-variant">
-                  <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                  Performance tracking &amp; optimization
-                </li>
-              </ul>
-              <Link href="/book-consultation" className="block text-center w-full py-4 rounded-2xl border border-outline-variant text-on-surface hover:bg-primary hover:text-on-primary transition-all">Get Started</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-      {/* Mid-Section Atmospheric CTA */}
-      <section className="relative min-h-[500px] md:h-[819px] py-20 md:py-0 flex items-center justify-center overflow-hidden">
-        <img className="absolute inset-0 w-full h-full object-cover grayscale brightness-50" alt="CTA" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwbDF6eYuMEWTahjLiuxtNLdlmocSZAlOdOBELOYPnCT34Tq6x_HE9cdbEf8kPPJmZS1wlKROqWBN0ovQ60eyskEz3XS9oZ3_ITlLg3rqmdF3RIq-XBt1RiAIuwfOy2eWbhoz0y4hBSSLPeoOSLt2DoMG9qRUF_piObqZ4RFqB7j5aT2CV_M1DrfhsMcp11ctIgsZ3hx1prOBV2wy0UGgWMpFWzI1QaVhBxm3o7bS7nw6ZPj-9vGRjKnCNvcJ4ZXdATxZSmpDuS9I"/>
-        <div className="absolute inset-0 bg-surface/40 backdrop-blur-[2px]"></div>
-        <div className="relative z-10 text-center px-margin-mobile">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-black/30 backdrop-blur-md mb-8">
-            <span className="material-symbols-outlined text-[16px] text-primary" style={{fontVariationSettings: "'FILL' 1"}}>security</span>
-            <span className="text-label-sm font-label-sm uppercase tracking-widest text-on-surface">Data-First Strategy</span>
-          </div>
-          <h2 className="font-display-md text-[32px] sm:text-[40px] md:text-display-md text-on-surface mb-10 max-w-2xl leading-tight">Ready to Scale Your Business with Clarity?</h2>
-          <Link href="/book-consultation" className="inline-block bg-primary text-on-primary px-12 py-5 rounded-full font-display-md text-body-lg shadow-[0_0_40px_rgba(112,212,239,0.4)] active:scale-95 transition-all">
-            Book Consultation
-          </Link>
-        </div>
-      </section>
+          {/* ── Left copy ── */}
+          <div className="space-y-8 z-10">
 
-      {/* Footer Section */}
-      <footer className="bg-surface-container-lowest border-t border-white/5 pt-section-gap-mobile md:pt-section-gap-desktop pb-12 md:pb-20">
-        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-gutter mb-16 md:mb-32">
-            <div className="col-span-1">
-              <div className="text-headline-lg font-display-lg text-primary mb-6">Ad Meliora</div>
-              <p className="text-on-surface-variant text-body-md max-w-xs">We help startups and growing businesses make better decisions, move faster.</p>
-              <div className="flex gap-4 mt-8">
-                <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                  <span className="material-symbols-outlined text-[18px]">public</span>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                  <span className="material-symbols-outlined text-[18px]">share</span>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                  <span className="material-symbols-outlined text-[18px]">alternate_email</span>
-                </div>
-              </div>
+            {/* HUD badge */}
+            <div className="hud-chip">
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-primary-teal"
+                style={{ animation:'pulse-glow 2s ease-in-out infinite', boxShadow:'0 0 6px #0b8da6' }}
+              />
+              Intelligence Refined
             </div>
-            <div className="hidden md:block col-span-1"></div>
-            <div className="col-span-1">
-              <span className="text-label-sm font-label-sm uppercase text-on-surface-variant block mb-6">We'd love to help you with ease</span>
-              <a className="text-headline-lg font-body-lg text-on-surface hover:text-primary transition-colors block mb-12" href="mailto:hello@abmeliora.com">hello@abmeliora.com</a>
-              <span className="text-label-sm font-label-sm uppercase text-on-surface-variant block mb-4">Location</span>
-              <p className="text-body-md text-on-surface-variant">8922 Preston Rd, Inglewood,<br/>Maine 98380</p>
-            </div>
-            <div className="col-span-1 md:text-right">
-              <span className="text-label-sm font-label-sm uppercase text-on-surface-variant block mb-6">Menu</span>
-              <ul className="space-y-3">
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Home</a></li>
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">About Us</a></li>
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Our Services</a></li>
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Process</a></li>
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Testimonials</a></li>
-                <li><a className="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Pricing</a></li>
-              </ul>
-            </div>
-          </div>
-          {/* Large Branding Footer Overlay */}
-          <div className="relative pt-12 md:pt-20 pb-8 flex flex-col justify-center items-center overflow-hidden">
-            <h1 className="text-[64px] sm:text-[120px] md:text-[240px] lg:text-[280px] font-display-lg leading-none tracking-tighter text-mask-nature select-none mb-8 text-center">
-              Ad Meliora
+
+            {/* Headline */}
+            <h1 className="font-display text-[2.6rem] sm:text-5xl md:text-6xl xl:text-[4.5rem] leading-[1.08] tracking-tight text-on-surface">
+              Uncover{' '}
+              <span className="gradient-text">hidden</span>
+              {' '}inefficiencies<br className="hidden sm:block" /> and maximize productivity.
             </h1>
-            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4 text-center text-label-sm font-label-sm text-on-surface-variant/40 uppercase tracking-widest pt-8 border-t border-white/5">
-              <span>© 2026 Ad Meliora. Precision Engineering for the Deep Signal.</span>
-              <div className="flex gap-8">
-                <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+
+            {/* Sub-copy */}
+            <p className="text-on-surface-variant text-lg md:text-xl max-w-lg leading-relaxed font-body">
+              Get clarity on your AI potential. We bridge the gap between complex data and actionable automation.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <Link
+                href="/book-consultation"
+                className="btn-primary flex items-center justify-center gap-2.5 px-8 py-4 text-xs"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>schedule</span>
+                Time Savings Audit
+              </Link>
+              <Link
+                href="/book-consultation"
+                className="btn-ghost flex items-center justify-center gap-2 px-8 py-4 text-xs"
+              >
+                Book Free AI Audit
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
+              </Link>
+            </div>
+
+            {/* Trust pill */}
+            <div className="flex items-center gap-3 pt-2">
+              <div className="flex -space-x-2">
+                {['A','B','C'].map((l, i) => (
+                  <div
+                    key={l}
+                    className="w-8 h-8 rounded-full border-2 border-surface flex items-center justify-center text-[10px] font-display text-on-primary"
+                    style={{
+                      background: i === 0
+                        ? 'linear-gradient(135deg,#0b8da6,#70d4ef)'
+                        : i === 1
+                          ? 'linear-gradient(135deg,#1b2022,#262b2d)'
+                          : 'linear-gradient(135deg,#2e9db7,#0b8da6)',
+                    }}
+                  >
+                    {l}
+                  </div>
+                ))}
               </div>
+              <span className="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">
+                Trusted by 60+ enterprises
+              </span>
+            </div>
+          </div>
+
+          {/* ── Right: Mascot ── */}
+          <div className="flex flex-col items-center lg:items-end z-10">
+            <div className="relative w-full max-w-[480px]">
+
+              {/* Tech frame */}
+              <div
+                id="mascot-frame"
+                className="tech-frame w-full aspect-square"
+                style={{ transition: 'transform 0.12s linear' }}
+              >
+                <div className="tech-frame-inner scan-line-overlay">
+                  {/* Corner HUD decorations */}
+                  <div className="corner-deco corner-tl" />
+                  <div className="corner-deco corner-tr" />
+                  <div className="corner-deco corner-bl" />
+                  <div className="corner-deco corner-br" />
+
+                  {/* Inner glow */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 30% 80%, rgba(11,141,166,0.18) 0%, transparent 60%)' }}
+                  />
+
+                  {/* Robot mascot */}
+                  <Image
+                    src="/robot-mascot.png"
+                    alt="Ad Meliora AI Robot Mascot"
+                    width={480}
+                    height={480}
+                    className="relative z-10 w-[92%] h-auto object-contain mx-auto mt-auto transition-transform duration-700 hover:scale-105"
+                    style={{ transformOrigin: 'bottom center' }}
+                    priority
+                  />
+                </div>
+              </div>
+
+              {/* Floating badge – analytics */}
+              <div
+                className="float-badge glass-card absolute -top-5 -right-5 p-3.5 rounded-2xl flex items-center gap-2.5"
+                style={{ borderColor: 'rgba(11,141,166,0.35)' }}
+              >
+                <span
+                  className="material-symbols-outlined text-primary-teal"
+                  style={{ fontSize: '26px', filter: 'drop-shadow(0 0 6px rgba(11,141,166,0.8))' }}
+                >
+                  analytics
+                </span>
+                <div>
+                  <div className="font-label text-[9px] uppercase tracking-widest text-on-surface-variant">Live Data</div>
+                  <div className="font-display text-sm text-on-surface">+34% ROI</div>
+                </div>
+              </div>
+
+              {/* Floating badge – memory */}
+              <div
+                className="float-badge-slow glass-card absolute -bottom-5 -left-5 p-3.5 rounded-2xl flex items-center gap-2.5"
+                style={{ borderColor: 'rgba(11,141,166,0.35)' }}
+              >
+                <span
+                  className="material-symbols-outlined text-tertiary"
+                  style={{ fontSize: '26px', filter: 'drop-shadow(0 0 6px rgba(239,194,0,0.7))' }}
+                >
+                  memory
+                </span>
+                <div>
+                  <div className="font-label text-[9px] uppercase tracking-widest text-on-surface-variant">Neural Core</div>
+                  <div className="font-display text-sm text-on-surface">AI-Powered</div>
+                </div>
+              </div>
+
+              {/* Status chip */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+                <div className="hud-chip" style={{ fontSize: '9px' }}>
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-primary-teal"
+                    style={{ boxShadow:'0 0 6px #0b8da6', animation:'pulse-glow 1.5s ease-in-out infinite' }}
+                  />
+                  System Online
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ MARQUEE ═══════════ */}
+      <div className="section-divider" />
+      <section className="py-10 overflow-hidden" style={{ background: 'rgba(27,32,34,0.2)' }}>
+        <div className="marquee-track gap-16 md:gap-28 items-center">
+          {[1, 2].map((copy) => (
+            <div key={copy} className="flex items-center gap-16 md:gap-28 px-14 shrink-0" aria-hidden={copy === 2}>
+              {['NEXUS','AETHER','ORBITAL','ZENITH','QUANTUM','VERTEX'].map((name, i) => (
+                <React.Fragment key={name}>
+                  <span className="font-display text-xl text-on-surface-variant uppercase tracking-[0.2em]" style={{ opacity: 0.28 }}>{name}</span>
+                  {i < 5 && <span className="w-1 h-1 rounded-full bg-primary-teal" style={{ opacity: 0.4 }} />}
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="section-divider" />
+
+      {/* ═══════════ SERVICES ═══════════ */}
+      <section id="solutions" className="py-24 md:py-36 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative">
+        <div className="teal-glow absolute top-1/2 -right-40 w-[500px] h-[500px] -z-10 opacity-40 pointer-events-none" />
+
+        {/* Section header */}
+        <div className="text-center mb-20 space-y-5 reveal">
+          <div className="hud-chip mx-auto">
+            <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>auto_awesome</span>
+            Specialized Solutions
+          </div>
+          <h2 className="font-display text-3xl md:text-5xl font-normal text-on-surface">Built for Precision</h2>
+          <p className="text-on-surface-variant max-w-xl mx-auto font-body leading-relaxed">
+            Modular AI tools designed to integrate seamlessly with your existing tech stack — zero disruption, maximum impact.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+
+          {/* Card 1 */}
+          <div className="glass-card p-10 rounded-[2.5rem] group relative overflow-hidden reveal">
+            <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(11,141,166,0.12) 0%, transparent 70%)' }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-primary-teal mb-8
+              group-hover:scale-110 transition-transform duration-300"
+              style={{ background:'rgba(11,141,166,0.1)', border:'1px solid rgba(11,141,166,0.2)' }}>
+              <span className="material-symbols-outlined" style={{ fontSize:'28px' }}>sync_alt</span>
+            </div>
+            <h3 className="font-display text-2xl font-normal mb-4 text-on-surface">Workflow Sync</h3>
+            <p className="text-on-surface-variant text-sm leading-relaxed mb-8 font-body">
+              Synchronize data across 200+ applications with zero latency and intelligent error handling.
+            </p>
+            <div className="card-bar" />
+          </div>
+
+          {/* Card 2 – Featured */}
+          <div className="glass-card p-10 rounded-[2.5rem] group relative overflow-hidden reveal"
+            style={{ background:'rgba(11,141,166,0.05)', borderColor:'rgba(11,141,166,0.2)' }}>
+            <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none"
+              style={{ background:'radial-gradient(circle, rgba(11,141,166,0.18) 0%, transparent 70%)' }} />
+            <div className="absolute top-6 right-6">
+              <div className="hud-chip" style={{ fontSize:'8px', padding:'0.2rem 0.6rem' }}>
+                <span className="w-1 h-1 rounded-full bg-primary-teal" style={{ boxShadow:'0 0 4px #0b8da6' }} />
+                Popular
+              </div>
+            </div>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-primary-teal mb-8
+              group-hover:scale-110 transition-transform duration-300"
+              style={{ background:'rgba(11,141,166,0.12)', border:'1px solid rgba(11,141,166,0.3)' }}>
+              <span className="material-symbols-outlined" style={{ fontSize:'28px' }}>psychology</span>
+            </div>
+            <h3 className="font-display text-2xl font-normal mb-4 text-on-surface">Neural Analytics</h3>
+            <p className="text-on-surface-variant text-sm leading-relaxed mb-8 font-body">
+              Predictive insights that help you understand your business velocity before the quarter ends.
+            </p>
+            <div className="card-bar" style={{ background:'rgba(11,141,166,0.6)' }} />
+          </div>
+
+          {/* Card 3 */}
+          <div className="glass-card p-10 rounded-[2.5rem] group relative overflow-hidden reveal">
+            <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none"
+              style={{ background:'radial-gradient(circle, rgba(239,194,0,0.08) 0%, transparent 70%)' }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-primary-teal mb-8
+              group-hover:scale-110 transition-transform duration-300"
+              style={{ background:'rgba(11,141,166,0.1)', border:'1px solid rgba(11,141,166,0.2)' }}>
+              <span className="material-symbols-outlined" style={{ fontSize:'28px' }}>hub</span>
+            </div>
+            <h3 className="font-display text-2xl font-normal mb-4 text-on-surface">Custom Nodes</h3>
+            <p className="text-on-surface-variant text-sm leading-relaxed mb-8 font-body">
+              Tailor-made AI agents trained on your proprietary data for ultra-specific business logic.
+            </p>
+            <div className="card-bar" />
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ STATS STRIP ═══════════ */}
+      <div className="section-divider" />
+      <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { value: '200+', label: 'App Integrations' },
+            { value: '60+',  label: 'Enterprise Clients' },
+            { value: '34%',  label: 'Avg. ROI Boost' },
+            { value: '99.9%',label: 'Uptime SLA' },
+          ].map((stat) => (
+            <div key={stat.label} className="space-y-2 reveal">
+              <div className="font-display text-4xl text-primary-teal"
+                style={{ filter:'drop-shadow(0 0 12px rgba(11,141,166,0.5))' }}>
+                {stat.value}
+              </div>
+              <div className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="section-divider" />
+
+      {/* ═══════════ PROCESS PIPELINE ═══════════ */}
+      <section id="methodology" className="py-24 md:py-36 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative">
+        <div className="teal-glow absolute -left-40 bottom-0 w-[400px] h-[400px] -z-10 opacity-40 pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-20 space-y-5 reveal">
+            <div className="hud-chip mx-auto">
+              <span className="material-symbols-outlined" style={{ fontSize:'13px' }}>account_tree</span>
+              The Automation Pipeline
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-normal text-on-surface">From Signal to Scale</h2>
+          </div>
+
+          <div className="relative">
+            {/* Connector line */}
+            <div className="hidden md:block absolute top-4 left-0 w-full h-px"
+              style={{ background:'linear-gradient(to right, transparent 5%, rgba(11,141,166,0.3) 30%, rgba(11,141,166,0.5) 50%, rgba(11,141,166,0.3) 70%, transparent 95%)' }} />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-14 md:gap-8 relative z-10">
+              {[
+                { phase:'01', title:'Discovery', delay:'0s',   desc:'Mapping your existing manual bottlenecks and opportunity surface across all workflows.' },
+                { phase:'02', title:'Architect',  delay:'0.7s', desc:'Designing custom AI logic, neural flows, and integration blueprints tailored to your stack.' },
+                { phase:'03', title:'Deploy',     delay:'1.4s', desc:'Live scaling and continuous optimization with real-time monitoring and performance audits.' },
+              ].map((step) => (
+                <div key={step.phase} className="text-center group reveal">
+                  <div className="w-8 h-8 rounded-full mx-auto mb-8 node-glow flex items-center justify-center relative"
+                    style={{ background:'#0a0f11', border:'2px solid #0b8da6' }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary-teal"
+                      style={{ animation:`pulse-glow 2s ease-in-out infinite`, animationDelay:step.delay }} />
+                    <div className="absolute inset-0 rounded-full"
+                      style={{ border:'1px solid rgba(11,141,166,0.4)', transform:'scale(1.8)', animation:`pulse-glow 2s ease-in-out infinite`, animationDelay:step.delay }} />
+                  </div>
+                  <div className="font-label text-[9px] uppercase tracking-[0.2em] text-primary-teal mb-3">Phase {step.phase}</div>
+                  <h4 className="font-display text-xl font-normal mb-3 text-on-surface">{step.title}</h4>
+                  <p className="text-sm text-on-surface-variant font-body leading-relaxed max-w-[220px] mx-auto">
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FINAL CTA ═══════════ */}
+      <section id="about" className="py-16 md:py-24 px-margin-mobile md:px-margin-desktop">
+        <div className="max-w-container-max mx-auto">
+          <div className="glass-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden reveal">
+            {/* Glow orbs */}
+            <div className="teal-glow absolute -top-20 -right-20 w-80 h-80 opacity-50 pointer-events-none" />
+            <div className="gold-glow absolute -bottom-20 -left-20 w-60 h-60 opacity-40 pointer-events-none" />
+
+            <div className="relative z-10 space-y-6">
+              <div className="hud-chip mx-auto">
+                <span className="material-symbols-outlined" style={{ fontSize:'13px' }}>rocket_launch</span>
+                Let&apos;s Build Together
+              </div>
+              <h2 className="font-display text-4xl md:text-5xl xl:text-6xl font-normal text-on-surface leading-[1.1]">
+                Ready to reclaim<br className="hidden md:block" /> your time?
+              </h2>
+              <p className="text-on-surface-variant text-lg max-w-xl mx-auto font-body leading-relaxed">
+                Join the next wave of high-performance enterprises. We handle the complexity, you enjoy the results.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Link href="/book-consultation" className="btn-primary px-10 py-5 text-xs">
+                  Talk to an Expert
+                </Link>
+                <button className="btn-ghost px-10 py-5 text-xs flex items-center justify-center gap-2">
+                  View Case Studies
+                  <span className="material-symbols-outlined" style={{ fontSize:'16px' }}>open_in_new</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FOOTER ═══════════ */}
+      <footer
+        id="success"
+        className="border-t pt-16 pb-8 relative overflow-hidden"
+        style={{ borderColor:'rgba(62,72,76,0.3)', background:'rgba(10,15,17,0.8)' }}
+      >
+        <div className="teal-glow absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20 pointer-events-none" />
+
+        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+          {/* Top grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background:'linear-gradient(135deg,#0b8da6,#70d4ef)' }}>
+                  <span className="material-symbols-outlined text-[#003641]" style={{ fontSize:'17px', fontVariationSettings:"'FILL' 1" }}>bolt</span>
+                </div>
+                <span className="font-display text-lg text-on-surface">Ad Meliora</span>
+              </div>
+              <p className="text-on-surface-variant text-sm leading-relaxed font-body max-w-xs">
+                Better things through intelligent automation. The future of work, redefined for today.
+              </p>
+            </div>
+
+            {[
+              { title:'Company',   links:[{ label:'About', href:'#' },{ label:'Case Studies', href:'#' },{ label:'Careers', href:'#' }] },
+              { title:'Resources', links:[{ label:'Blog', href:'#' },{ label:'API Docs', href:'#' },{ label:'Changelog', href:'#' }] },
+              { title:'Contact',   links:[{ label:'LinkedIn', href:'#' },{ label:'Twitter / X', href:'#' },{ label:'hello@abmeliora.com', href:'mailto:hello@abmeliora.com' }] },
+            ].map((col) => (
+              <div key={col.title} className="space-y-4">
+                <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-primary-teal font-semibold">{col.title}</h5>
+                {col.links.map((l) => (
+                  <a key={l.label} href={l.href} className="block text-on-surface-variant hover:text-primary-teal transition-colors text-sm font-body">
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="section-divider mb-8" />
+
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">
+              © 2024 Ad Meliora. All rights reserved.
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-teal" style={{ boxShadow:'0 0 6px #0b8da6' }} />
+              <span className="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">System Status: Optimized</span>
+            </div>
+            <div className="flex gap-6">
+              {['Privacy','Terms'].map((t) => (
+                <a key={t} href="#" className="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant hover:text-primary-teal transition-colors">{t}</a>
+              ))}
             </div>
           </div>
         </div>
       </footer>
+
     </main>
   );
 }
