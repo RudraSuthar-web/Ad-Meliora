@@ -1,511 +1,523 @@
 'use client';
-import React, { useEffect } from 'react';
-import Image from 'next/image';
+import React, { useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+} from 'framer-motion';
 
+/* ── Reusable fade-up animation wrapper ── */
+function FadeUp({ children, delay = 0, className = '' }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px 0px' });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── Stagger children wrapper ── */
+function StaggerContainer({ children, className = '' }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px 0px' });
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? 'show' : 'hidden'}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.12 } },
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 40 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+};
+
+/* ─── Data ─────────────────────────────────────────── */
+const SERVICES = [
+  {
+    icon: 'sync_alt',
+    title: 'Workflow Sync',
+    desc: 'Synchronize data across 200+ applications with zero latency and intelligent error handling.',
+    accent: false,
+    tag: null,
+  },
+  {
+    icon: 'psychology',
+    title: 'Neural Analytics',
+    desc: 'Predictive insights that help you understand your business velocity before the quarter ends.',
+    accent: true,
+    tag: 'Popular',
+  },
+  {
+    icon: 'hub',
+    title: 'Custom AI Nodes',
+    desc: 'Tailor-made AI agents trained on your proprietary data for ultra-specific business logic.',
+    accent: false,
+    tag: null,
+  },
+];
+
+const STEPS = [
+  {
+    phase: '01',
+    title: 'Discovery',
+    desc: 'Mapping your existing manual bottlenecks and opportunity surface across all workflows.',
+  },
+  {
+    phase: '02',
+    title: 'Architect',
+    desc: 'Designing custom AI logic, neural flows, and integration blueprints tailored to your stack.',
+  },
+  {
+    phase: '03',
+    title: 'Deploy',
+    desc: 'Live scaling and continuous optimization with real-time monitoring and performance audits.',
+  },
+];
+
+/* ─── Page ─────────────────────────────────────────── */
 export default function Page() {
-
-  /* ── Scroll reveal ── */
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.08 }
-    );
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
-  /* ── Mascot parallax (desktop only) ── */
-  useEffect(() => {
-    const frame = document.getElementById('mascot-frame');
-    if (!frame) return;
-    const onMove = (e) => {
-      const r = frame.getBoundingClientRect();
-      const dx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
-      const dy = (e.clientY - (r.top  + r.height / 2)) / window.innerHeight;
-      frame.style.transform = `perspective(900px) rotateY(${dx * 5}deg) rotateX(${-dy * 3}deg)`;
-    };
-    const onLeave = () => { frame.style.transform = 'perspective(900px) rotateY(0) rotateX(0)'; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseleave', onLeave);
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseleave', onLeave); };
-  }, []);
-
-  const BRANDS = ['NEXUS','AETHER','ORBITAL','ZENITH','QUANTUM','VERTEX'];
-
-  const SERVICES = [
-    { icon:'sync_alt',   title:'Workflow Sync',    desc:'Synchronize data across 200+ applications with zero latency and intelligent error handling.',            accent:false },
-    { icon:'psychology', title:'Neural Analytics', desc:'Predictive insights that help you understand your business velocity before the quarter ends.',           accent:true  },
-    { icon:'hub',        title:'Custom Nodes',     desc:'Tailor-made AI agents trained on your proprietary data for ultra-specific business logic.',              accent:false },
-  ];
-
-  const STEPS = [
-    { phase:'01', title:'Discovery', delay:'0s',   desc:'Mapping your existing manual bottlenecks and opportunity surface across all workflows.' },
-    { phase:'02', title:'Architect', delay:'0.6s', desc:'Designing custom AI logic, neural flows, and integration blueprints tailored to your stack.' },
-    { phase:'03', title:'Deploy',    delay:'1.2s', desc:'Live scaling and continuous optimization with real-time monitoring and performance audits.' },
-  ];
-
-  const STATS = [
-    { value:'200+', label:'App Integrations' },
-    { value:'60+',  label:'Enterprise Clients' },
-    { value:'34%',  label:'Avg. ROI Boost' },
-    { value:'99.9%',label:'Uptime SLA' },
-  ];
-
-  const FOOTER_COLS = [
-    { title:'Company',   links:[{ label:'About', href:'#' },{ label:'Case Studies', href:'#' },{ label:'Careers', href:'#' }] },
-    { title:'Resources', links:[{ label:'Blog',  href:'#' },{ label:'API Docs',     href:'#' },{ label:'Changelog',href:'#' }] },
-    { title:'Contact',   links:[{ label:'LinkedIn', href:'#' },{ label:'Twitter / X', href:'#' },{ label:'hello@abmeliora.com', href:'mailto:hello@abmeliora.com' }] },
-  ];
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroY    = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden" style={{ background: '#0a0e10' }}>
+    
+      <Link
+        href="/book-consultation"
+        aria-label="Open consultation"
+        className="fixed bottom-4 right-4 z-50 group flex items-end gap-3 rounded-full  px-3 py-2  backdrop-blur-lg transition-all duration-200 hover:scale-110 "
+      >
+        
+         <Image
+            src="/robot-mascot.png"
+            alt="Robot mascot"
+            width={100}
+            height={100}
+            className="relative z-10 h-20 w-20 object-contain drop-shadow-[0_0_12px_rgba(11,141,166,0.35)]"
+            priority
+          />
+        
+      </Link>
 
-      {/* ══════════════════ HERO ══════════════════ */}
-      <section className="relative
-                          pt-28 pb-16
-                          sm:pt-36 sm:pb-20
-                          md:pt-44 md:pb-28
-                          lg:pt-52 lg:pb-36
-                          px-5 sm:px-8 md:px-12
-                          max-w-[1280px] mx-auto">
+      {/* ═══════════════════ ═════════════════════════════
+          HERO
+      ════════════════════════════════════════════════ */}  
+      <section
+        ref={heroRef}
+        className="relative min-h-[90svh] flex flex-col items-center justify-center text-center
+                   px-5 sm:px-8 overflow-hidden"
+      >
+        {/* Grid background */}
+        <div className="grid-bg absolute inset-0 pointer-events-none opacity-80" />
 
-        {/* Ambient blobs */}
-        <div className="teal-glow hidden sm:block absolute -top-20 -left-32 w-[350px] h-[350px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] -z-10 opacity-60" />
-        <div className="gold-glow hidden sm:block absolute top-1/3 right-0 w-[250px] h-[250px] md:w-[380px] md:h-[380px] -z-10 opacity-50" />
+        {/* Ambient glows */} 
+        <div className="teal-glow absolute -top-32 -left-32 w-[600px] h-[600px] opacity-30 pointer-events-none" />
+        <div className="gold-glow absolute top-1/2 right-0 w-[500px] h-[500px] opacity-20 pointer-events-none" />
+        <div className="teal-glow absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] opacity-10 pointer-events-none" />
 
-        {/* Two-column: stacked mobile → side-by-side lg+ */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-14 lg:gap-16 items-center">
+        {/* Content — parallax on scroll */}
+        <motion.div
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="relative z-10 flex flex-col items-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 max-w-4xl mx-auto pt-25 lg:pt-28 sm:pt-18"
+        >
+         
 
-          {/* ── Left copy ── */}
-          <div className="flex flex-col gap-5 sm:gap-6 lg:gap-7 z-10 text-center lg:text-left items-center lg:items-start">
+          {/* H1 */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-display text-on-surface leading-[1.08] tracking-tight"
+            style={{
+              fontSize: 'clamp(2.5rem, 4vw, 4.0rem)',
+            }}
+          >
+            Uncover{' '}
+            <span className="gradient-text">hidden</span>
+            {' '}inefficiencies
+            <br className="hidden sm:block" />
+            {' '}and maximize productivity.
+          </motion.h1>
 
-            {/* HUD badge */}
-            <div className="hud-chip">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-teal"
-                style={{ boxShadow:'0 0 6px #0b8da6', animation:'pulse-glow 2s ease-in-out infinite' }} />
-              Intelligence Refined
-            </div>
+          {/* Sub-copy */}
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="font-body text-on-surface-variant leading-relaxed max-w-[540px] mx-auto"
+            style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)' }}
+          >
+            Get clarity on your AI potential. We bridge the gap between complex data
+            and actionable automation — with zero disruption to your stack.
+          </motion.p>
 
-            {/* H1 — scales from 32px mobile → 72px+ desktop */}
-            <h1 className="font-display tracking-tight text-on-surface leading-[1.08]
-                           text-[2rem]
-                           sm:text-[2.8rem]
-                           md:text-[3.5rem]
-                           lg:text-[4rem]
-                           xl:text-[4.75rem]
-                           2xl:text-[5.25rem]">
-              Uncover{' '}
-              <span className="gradient-text">hidden</span>
-              {' '}inefficiencies<br className="hidden md:block" />
-              {' '}and maximize productivity.
-            </h1>
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col xs:flex-row gap-3 sm:gap-4 mt-2"
+          >
+            <Link href="/book-consultation"
+              className="btn-primary gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs">
+              Contact Us
+           </Link> {/* 
+            <Link href="/book-consultation"
+              className="btn-ghost gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs">
+              Book Free AI Audit
+            </Link> */}
+          </motion.div>
 
-            {/* Sub-copy — scales comfortably */}
-            <p className="text-on-surface-variant leading-relaxed font-body max-w-lg
-                          text-base
-                          sm:text-lg
-                          md:text-xl
-                          lg:text-xl">
-              Get clarity on your AI potential. We bridge the gap between complex data and actionable automation.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-              <Link href="/book-consultation"
-                className="btn-primary flex items-center justify-center gap-2
-                           px-6 py-3.5
-                           sm:px-7 sm:py-4
-                           md:px-8 md:py-4
-                           lg:px-9 lg:py-5
-                           text-xs sm:text-sm md:text-sm lg:text-base
-                           w-full xs:w-auto">
-                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">schedule</span>
-                Time Savings Audit
-              </Link>
-              <Link href="/book-consultation"
-                className="btn-ghost flex items-center justify-center gap-2
-                           px-6 py-3.5
-                           sm:px-7 sm:py-4
-                           md:px-8 md:py-4
-                           lg:px-9 lg:py-5
-                           text-xs sm:text-sm md:text-sm lg:text-base
-                           w-full xs:w-auto">
-                Book Free AI Audit
-                <span className="material-symbols-outlined text-[16px] sm:text-[18px]">arrow_forward</span>
-              </Link>
-            </div>
-
-            {/* Trust pill */}
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {['A','B','C'].map((l, i) => (
-                  <div key={l}
-                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-surface
-                               flex items-center justify-center text-[10px] sm:text-xs
-                               font-display text-on-primary"
-                    style={{ background: i===0 ? 'linear-gradient(135deg,#0b8da6,#70d4ef)'
-                                       : i===1 ? 'linear-gradient(135deg,#1b2022,#262b2d)'
-                                               : 'linear-gradient(135deg,#2e9db7,#0b8da6)' }}>
-                    {l}
-                  </div>
-                ))}
-              </div>
-              <span className="font-label text-[10px] sm:text-xs uppercase tracking-[0.15em] text-on-surface-variant">
-                Trusted by 60+ enterprises
-              </span>
-            </div>
-          </div>
-
-          {/* ── Right: Mascot ── */}
-          <div className="flex justify-center lg:justify-end z-10 mt-4 lg:mt-0">
-            <div className="relative
-                            w-[260px]
-                            xs:w-[300px]
-                            sm:w-[380px]
-                            md:w-[430px]
-                            lg:w-[460px]
-                            xl:w-[500px]">
-
-              {/* Tech frame */}
-              <div id="mascot-frame" className="tech-frame w-full aspect-square"
-                style={{ transition:'transform 0.12s linear' }}>
-                <div className="tech-frame-inner scan-line-overlay">
-                  <div className="corner-deco corner-tl" />
-                  <div className="corner-deco corner-tr" />
-                  <div className="corner-deco corner-bl" />
-                  <div className="corner-deco corner-br" />
-                  <div className="absolute inset-0 pointer-events-none"
-                    style={{ background:'radial-gradient(ellipse at 30% 80%, rgba(11,141,166,0.18) 0%, transparent 60%)' }} />
-                  <Image src="/robot-mascot.png" alt="Ab Meliora AI Robot Mascot"
-                    width={500} height={500} priority
-                    className="relative z-10 w-[92%] h-auto object-contain mx-auto mt-auto
-                               transition-transform duration-700 hover:scale-105"
-                    style={{ transformOrigin:'bottom center' }} />
+          {/* Trust indicators */}
+          {/* <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="flex items-center gap-4 sm:gap-6 mt-4"
+          >
+            {[
+              { value: '200+', label: 'Integrations' },
+              { value: '60+',  label: 'Clients' },
+              { value: '99.9%', label: 'Uptime SLA' },
+            ].map((stat, i) => (
+              <React.Fragment key={stat.label}>
+                {i > 0 && <div className="w-px h-6 bg-outline-variant opacity-40" />}
+                <div className="text-center">
+                  <div className="font-display text-primary-teal text-sm sm:text-base font-normal">{stat.value}</div>
+                  <div className="font-label text-on-surface-variant uppercase tracking-[0.14em]" style={{ fontSize: '9px' }}>{stat.label}</div>
                 </div>
-              </div>
+              </React.Fragment>
+            ))}
+          </motion.div> */}
+        </motion.div>
 
-              {/* Floating badge – analytics */}
-              <div className="hidden xs:flex float-badge glass-card
-                              absolute -top-4 -right-4 sm:-top-5 sm:-right-5
-                              p-2.5 sm:p-3 md:p-3.5
-                              rounded-xl sm:rounded-2xl items-center gap-2 sm:gap-2.5"
-                style={{ borderColor:'rgba(11,141,166,0.35)' }}>
-                <span className="material-symbols-outlined text-primary-teal"
-                  style={{ fontSize:'22px', filter:'drop-shadow(0 0 5px rgba(11,141,166,0.8))' }}>analytics</span>
-                <div>
-                  <div className="font-label text-[8px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant">Live Data</div>
-                  <div className="font-display text-xs sm:text-sm lg:text-base text-on-surface">+34% ROI</div>
-                </div>
-              </div>
-
-              {/* Floating badge – memory */}
-              <div className="hidden xs:flex float-badge-slow glass-card
-                              absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5
-                              p-2.5 sm:p-3 md:p-3.5
-                              rounded-xl sm:rounded-2xl items-center gap-2 sm:gap-2.5"
-                style={{ borderColor:'rgba(11,141,166,0.35)' }}>
-                <span className="material-symbols-outlined text-tertiary"
-                  style={{ fontSize:'22px', filter:'drop-shadow(0 0 5px rgba(239,194,0,0.7))' }}>memory</span>
-                <div>
-                  <div className="font-label text-[8px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant">Neural Core</div>
-                  <div className="font-display text-xs sm:text-sm lg:text-base text-on-surface">AI-Powered</div>
-                </div>
-              </div>
-
-              {/* Status chip */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20">
-                <div className="hud-chip" style={{ fontSize:'8px', padding:'0.2rem 0.7rem' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-teal"
-                    style={{ boxShadow:'0 0 6px #0b8da6', animation:'pulse-glow 1.5s ease-in-out infinite' }} />
-                  System Online
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    
       </section>
 
-      {/* ══════════════════ MARQUEE ══════════════════ */}
-      <div className="section-divider" />
-      <section className="py-8 sm:py-10 overflow-hidden" style={{ background:'rgba(27,32,34,0.2)' }}>
-        <div className="marquee-track items-center">
-          {[1,2].map((copy) => (
-            <div key={copy} className="flex items-center gap-8 sm:gap-16 md:gap-20 lg:gap-28 px-8 sm:px-14 shrink-0"
-              aria-hidden={copy===2}>
-              {BRANDS.map((name, i) => (
-                <React.Fragment key={name}>
-                  <span className="font-display uppercase tracking-[0.2em] text-on-surface-variant
-                                   text-sm sm:text-lg md:text-xl lg:text-2xl"
-                    style={{ opacity:0.28 }}>{name}</span>
-                  {i < BRANDS.length-1 && (
-                    <span className="w-1 h-1 rounded-full bg-primary-teal flex-shrink-0" style={{ opacity:0.4 }} />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-      <div className="section-divider" />
+      {/* ════════════════════════════════════════════════
+          SERVICES
+      ════════════════════════════════════════════════ */}
+      <section
+        id="solutions"
+        className="py-24 sm:py-28 md:py-32 lg:py-36 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto relative"
+      >
+        {/* Section glow */}
+        <div className="teal-glow hidden lg:block absolute top-1/2 -right-48 w-[500px] h-[500px] -z-10 opacity-25 pointer-events-none" />
 
-      {/* ══════════════════ SERVICES ══════════════════ */}
-      <section id="solutions"
-        className="py-16 sm:py-20 md:py-28 lg:py-36
-                   px-5 sm:px-8 md:px-12
-                   max-w-[1280px] mx-auto relative">
-        <div className="teal-glow hidden lg:block absolute top-1/2 -right-40 w-[450px] h-[450px] -z-10 opacity-40" />
-
-        {/* Header */}
-        <div className="text-center mb-12 sm:mb-16 md:mb-20 space-y-4 sm:space-y-5 reveal">
-          <div className="hud-chip mx-auto">
-            <span className="material-symbols-outlined text-sm sm:text-base">auto_awesome</span>
-            Specialized Solutions
-          </div>
-          <h2 className="font-display font-normal text-on-surface
-                         text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+        {/* Section header */}
+        <FadeUp className="text-center mb-14 sm:mb-18 md:mb-20 space-y-4 sm:space-y-5">
+          <div className="hud-chip mx-auto">Specialized Solutions</div>
+          <h2 className="font-display font-normal text-on-surface"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: '1.1' }}>
             Built for Precision
           </h2>
-          <p className="text-on-surface-variant font-body leading-relaxed max-w-xl mx-auto
-                        text-sm sm:text-base md:text-lg lg:text-xl">
-            Modular AI tools designed to integrate seamlessly with your existing tech stack —
-            zero disruption, maximum impact.
+          <p className="font-body text-on-surface-variant leading-relaxed max-w-lg mx-auto"
+            style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)' }}>
+            Modular AI tools designed to integrate seamlessly with your existing
+            tech stack — zero disruption, maximum impact.
           </p>
-        </div>
+        </FadeUp>
 
-        {/* Cards — 1 col mobile, 2 col sm, 3 col md+ */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
+        {/* Cards */}
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-7">
           {SERVICES.map((svc) => (
-            <div key={svc.title}
-              className="glass-card group relative overflow-hidden reveal
-                         p-7 sm:p-8 md:p-9 lg:p-10
-                         rounded-[1.75rem] sm:rounded-[2rem] md:rounded-[2.5rem]"
-              style={svc.accent ? { background:'rgba(11,141,166,0.05)', borderColor:'rgba(11,141,166,0.2)' } : {}}>
-              <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full pointer-events-none"
-                style={{ background:`radial-gradient(circle, ${svc.accent ? 'rgba(11,141,166,0.18)' : 'rgba(11,141,166,0.1)'} 0%, transparent 70%)` }} />
+            <motion.div
+              key={svc.title}
+              variants={cardVariant}
+              className="glass-card group relative overflow-hidden rounded-[1.75rem] sm:rounded-[2rem] p-7 sm:p-8 md:p-7 lg:p-8 xl:p-9 flex flex-col"
+              style={svc.accent ? { background: 'rgba(11,141,166,0.04)', borderColor: 'rgba(11,141,166,0.18)' } : {}}
+            >
+              {/* Top accent glow */}
+              <div
+                className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none"
+                style={{ background: `radial-gradient(circle, ${svc.accent ? 'rgba(11,141,166,0.18)' : 'rgba(11,141,166,0.09)'} 0%, transparent 70%)` }}
+              />
+
+              {/* Popular badge */}
               {svc.accent && (
-                <div className="absolute top-5 right-5">
-                  <div className="hud-chip" style={{ fontSize:'8px', padding:'0.18rem 0.55rem' }}>
-                    <span className="w-1 h-1 rounded-full bg-primary-teal" style={{ boxShadow:'0 0 4px #0b8da6' }} />
+                <div className="absolute top-3 right-5">
+                  <div className="hud-chip" style={{ fontSize: '8px', padding: '0.18rem 0.6rem' }}>
+                    <span className="w-1 h-1 rounded-full bg-primary-teal flex-shrink-0"
+                      style={{ boxShadow: '0 0 4px #0b8da6' }} />
                     Popular
                   </div>
                 </div>
               )}
-              {/* Icon */}
-              <div className="w-12 h-12 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16
-                              rounded-xl sm:rounded-2xl flex items-center justify-center text-primary-teal
-                              mb-6 sm:mb-7 md:mb-8 group-hover:scale-110 transition-transform duration-300"
-                style={{ background:`rgba(11,141,166,${svc.accent ? '0.12' : '0.1'})`, border:'1px solid rgba(11,141,166,0.25)' }}>
-                <span className="material-symbols-outlined text-[24px] sm:text-[26px] md:text-[28px] lg:text-[32px]">{svc.icon}</span>
-              </div>
-              <h3 className="font-display font-normal text-on-surface mb-3 sm:mb-4
-                             text-xl sm:text-2xl md:text-2xl lg:text-3xl">
+
+              <h3 className="font-display font-normal text-on-surface mb-3 text-xl sm:text-2xl md:text-[1.4rem] lg:text-[1.5rem] xl:text-2xl">
                 {svc.title}
               </h3>
-              <p className="text-on-surface-variant font-body leading-relaxed mb-6 sm:mb-7 md:mb-8
-                            text-sm sm:text-base md:text-base lg:text-lg">
+              <p className="font-body text-on-surface-variant leading-relaxed mb-7 flex-grow text-sm sm:text-base md:text-[15px] xl:text-base">
                 {svc.desc}
               </p>
-              <div className="card-bar" style={svc.accent ? { background:'rgba(11,141,166,0.6)' } : {}} />
-            </div>
+
+              {/* Bottom bar */}
+              <div className="card-bar" style={svc.accent ? { background: 'rgba(11,141,166,0.55)' } : {}} />
+            </motion.div>
           ))}
-        </div>
+        </StaggerContainer>
       </section>
 
-      {/* ══════════════════ STATS ══════════════════ */}
-      <div className="section-divider" />
-      <section className="py-12 sm:py-14 md:py-16 lg:py-20
-                          px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10 text-center">
-          {STATS.map((s) => (
-            <div key={s.label} className="space-y-2 sm:space-y-3 reveal">
-              <div className="font-display text-on-surface text-primary-teal
-                              text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-                style={{ filter:'drop-shadow(0 0 12px rgba(11,141,166,0.5))' }}>
-                {s.value}
-              </div>
-              <div className="font-label uppercase tracking-widest text-on-surface-variant
-                              text-[10px] sm:text-xs md:text-sm">
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <div className="section-divider" />
+      {/* ════════════════════════════════════════════════
+          PIPELINE / METHODOLOGY
+      ════════════════════════════════════════════════ */}
+      <section
+        id="methodology"
+        className="py-15 sm:py-18 md:py-32 lg:py-36 px-5 sm:px-8 md:px-12 relative"
+        style={{ background: 'rgba(11,141,166,0.022)' }}
+      >
+        {/* Top/Bottom fade */}
+        <div className="absolute inset-x-0 top-0 h-24 pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, #0a0e10, transparent)' }} />
+        <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, #0a0e10, transparent)' }} />
 
-      {/* ══════════════════ PIPELINE ══════════════════ */}
-      <section id="methodology"
-        className="py-16 sm:py-20 md:py-28 lg:py-36
-                   px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto relative">
-        <div className="teal-glow hidden lg:block absolute -left-40 bottom-0 w-[380px] h-[380px] -z-10 opacity-40" />
+        <div className="teal-glow hidden lg:block absolute -left-48 bottom-1/4 w-[400px] h-[400px] -z-10 opacity-20 pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16 md:mb-20 space-y-4 sm:space-y-5 reveal">
-            <div className="hud-chip mx-auto">
-              <span className="material-symbols-outlined text-sm sm:text-base">account_tree</span>
-              The Automation Pipeline
-            </div>
-            <h2 className="font-display font-normal text-on-surface
-                           text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+        <div className="max-w-[880px] mx-auto">
+          {/* Header */}
+          <FadeUp className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5">
+            <div className="hud-chip mx-auto">The Automation Pipeline</div>
+            <h2 className="font-display font-normal text-on-surface"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: '1.1' }}>
               From Signal to Scale
             </h2>
-          </div>
+            <p className="font-body text-on-surface-variant leading-relaxed max-w-md mx-auto"
+              style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)' }}>
+              A proven three-phase methodology built for speed, precision, and lasting ROI.
+            </p>
+          </FadeUp>
 
-          <div className="relative">
-            {/* Desktop horizontal connector */}
-            <div className="hidden md:block absolute top-4 left-0 w-full h-px"
-              style={{ background:'linear-gradient(to right, transparent 5%, rgba(11,141,166,0.3) 30%, rgba(11,141,166,0.5) 50%, rgba(11,141,166,0.3) 70%, transparent 95%)' }} />
-            {/* Mobile vertical connector */}
-            <div className="md:hidden absolute left-4 top-0 h-full w-px"
-              style={{ background:'linear-gradient(to bottom, transparent 5%, rgba(11,141,166,0.35) 20%, rgba(11,141,166,0.35) 80%, transparent 95%)' }} />
+          {/* Mobile steps */}
+          <StaggerContainer className="relative mx-auto max-w-5xl md:hidden">
+            <div
+              className="absolute left-4 top-4 bottom-4 w-px"
+              style={{ background: 'linear-gradient(to bottom, transparent, rgba(11,141,166,0.35), rgba(11,141,166,0.35), transparent)' }}
+            />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 md:gap-8 relative z-10">
-              {STEPS.map((step) => (
-                <div key={step.phase}
-                  className="flex md:flex-col items-start md:items-center gap-5 md:gap-0 md:text-center reveal
-                             pl-10 md:pl-0">
-                  {/* Node */}
-                  <div className="w-8 h-8 rounded-full node-glow flex items-center justify-center relative
-                                  md:mb-8 -ml-10 md:ml-0 md:mx-auto flex-shrink-0"
-                    style={{ background:'#0a0f11', border:'2px solid #0b8da6' }}>
-                    <div className="w-2.5 h-2.5 rounded-full bg-primary-teal"
-                      style={{ animation:'pulse-glow 2s ease-in-out infinite', animationDelay:step.delay }} />
-                    <div className="absolute inset-0 rounded-full"
-                      style={{ border:'1px solid rgba(11,141,166,0.4)', transform:'scale(1.8)',
-                               animation:'pulse-glow 2s ease-in-out infinite', animationDelay:step.delay }} />
-                  </div>
-                  {/* Text */}
-                  <div>
-                    <div className="font-label uppercase tracking-[0.2em] text-primary-teal mb-1.5 sm:mb-2
-                                    text-[10px] sm:text-xs md:text-sm">
-                      Phase {step.phase}
+            <div className="relative z-10 space-y-4 sm:space-y-5">
+              {STEPS.map((step, i) => (
+                <motion.div
+                  key={step.phase}
+                  variants={cardVariant}
+                  className="flex items-start gap-6 pl-0"
+                >
+                  <div className="relative flex-shrink-0">
+                    <div className="w-9 h-9 rounded-full node-glow flex items-center justify-center"
+                      style={{ background: '#0a0e10', border: '1.5px solid #0b8da6' }}>
+                      <span className="font-label text-primary-teal font-semibold" style={{ fontSize: '10px', letterSpacing: '0.05em' }}>
+                        {step.phase}
+                      </span>
                     </div>
-                    <h4 className="font-display font-normal text-on-surface mb-2 sm:mb-3
-                                   text-lg sm:text-xl md:text-xl lg:text-2xl">
+                    <div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        border: '1px solid rgba(11,141,166,0.3)',
+                        transform: 'scale(1.65)',
+                        animation: 'pulse-glow 2.5s ease-in-out infinite',
+                        animationDelay: `${i * 0.5}s`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="min-w-0 space-y-2 pt-1">
+                    <h4 className="font-display font-normal text-on-surface text-xl sm:text-2xl leading-tight">
                       {step.title}
                     </h4>
-                    <p className="text-on-surface-variant font-body leading-relaxed md:max-w-[200px] md:mx-auto
-                                  text-sm sm:text-base md:text-base lg:text-lg">
+                    <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
                       {step.desc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </StaggerContainer>
+
+          {/* Desktop steps */}
+          <StaggerContainer className="relative mx-auto hidden max-w-5xl md:block">
+            <div
+              className="absolute left-10 right-10 top-[27px] h-px"
+              style={{ background: 'linear-gradient(to right, transparent 5%, rgba(11,141,166,0.25) 30%, rgba(11,141,166,0.45) 50%, rgba(11,141,166,0.25) 70%, transparent 95%)' }}
+            />
+
+            <div className="relative z-10 grid grid-cols-3 gap-8 lg:gap-15">
+              {STEPS.map((step, i) => (
+                <motion.div
+                  key={step.phase}
+                  variants={cardVariant}
+                  className="flex flex-col  items-center text-center"
+                >
+                  <div className="flex items-center gap-10 -translate-x-10 xl:-translate-x-10">
+                    <div className="relative flex-shrink-0 ">
+                      <div className="w-11 h-11 rounded-full node-glow flex items-center justify-center"
+                        style={{ background: '#0a0e10', border: '1.5px solid #0b8da6' }}>
+                        <span className="font-label text-primary-teal font-semibold" style={{ fontSize: '11px', letterSpacing: '0.05em' }}>
+                          {step.phase}
+                        </span>
+                      </div>
+                      <div
+                        className="absolute inset-0 rounded-full"
+                        style={{
+                          border: '1px solid rgba(11,141,166,0.3)',
+                          transform: 'scale(2.0)',
+                          animation: 'pulse-glow 2.5s ease-in-out infinite',
+                          animationDelay: `${i * 0.5}s`,
+                        }}
+                      />
+                    </div>
+
+                    <h4 className="font-display font-normal text-on-surface text-[1.45rem] lg:text-[1.6rem] xl:text-[1.8rem] leading-tight text-left">
+                      {step.title}
+                    </h4>
+                  </div>
+
+                  <p className="mt-8 font-body text-on-surface-variant leading-relaxed text-[15px] xl:text-base max-w-[220px]">
+                    {step.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </StaggerContainer>
         </div>
       </section>
 
-      {/* ══════════════════ CTA ══════════════════ */}
-      <section id="about"
-        className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12">
+      {/* ════════════════════════════════════════════════
+          CTA BANNER
+      ════════════════════════════════════════════════ */}
+      <section
+        id="about"
+        className="py-16 sm:py-20 md:py-24 lg:py-28 px-5 sm:px-8 md:px-12"
+      >
         <div className="max-w-[1280px] mx-auto">
-          <div className="glass-card text-center relative overflow-hidden reveal
-                          rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem]
-                          p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24">
-            <div className="teal-glow absolute -top-16 -right-16 w-60 sm:w-72 md:w-80 h-60 sm:h-72 md:h-80 opacity-50 pointer-events-none" />
-            <div className="gold-glow absolute -bottom-16 -left-16 w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 opacity-40 pointer-events-none" />
+          <FadeUp>
+            <div className="glass-card relative overflow-hidden text-center
+                            rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[2.35rem] lg:rounded-[2.6rem] xl:rounded-[3rem]
+                            p-10 sm:p-14 md:p-12 lg:p-14 xl:p-20">
 
-            <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8">
-              <div className="hud-chip mx-auto">
-                <span className="material-symbols-outlined text-sm sm:text-base">rocket_launch</span>
-                Let&apos;s Build Together
-              </div>
-              <h2 className="font-display font-normal text-on-surface leading-[1.1]
-                             text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl">
-                Ready to reclaim<br className="hidden sm:block" /> your time?
-              </h2>
-              <p className="text-on-surface-variant font-body leading-relaxed
-                            max-w-xs sm:max-w-sm md:max-w-xl mx-auto
-                            text-sm sm:text-base md:text-lg lg:text-xl">
-                Join the next wave of high-performance enterprises. We handle the complexity, you enjoy the results.
-              </p>
-              <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
-                <Link href="/book-consultation"
-                  className="btn-primary flex items-center justify-center gap-2
-                             px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6
-                             text-sm sm:text-base md:text-base lg:text-lg">
-                  Talk to an Expert
-                </Link>
-                <button className="btn-ghost flex items-center justify-center gap-2
-                                   px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6
-                                   text-sm sm:text-base md:text-base lg:text-lg">
-                  View Case Studies
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px] md:text-[20px]">open_in_new</span>
-                </button>
+              {/* Background decoration */}
+              <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
+              <div className="teal-glow absolute -top-20 -right-20 w-72 sm:w-96 h-72 sm:h-96 opacity-40 pointer-events-none" />
+              <div className="gold-glow absolute -bottom-20 -left-20 w-64 sm:w-80 h-64 sm:h-80 opacity-30 pointer-events-none" />
+
+              {/* Subtle border glow on hover */}
+              <div className="absolute inset-0 rounded-[inherit] pointer-events-none"
+                style={{ boxShadow: 'inset 0 0 60px rgba(11,141,166,0.04)' }} />
+
+              <div className="relative z-10 space-y-6 sm:space-y-7 md:space-y-8">
+                <div className="hud-chip mx-auto">Ready to Transform?</div>
+
+                <h2
+                  className="font-display font-normal text-on-surface leading-[1.1]"
+                  style={{ fontSize: 'clamp(1.9rem, 5vw, 4rem)' }}
+                >
+                  Ready to reclaim
+                  <br className="hidden sm:block" />
+                  {' '}your time?
+                </h2>
+
+                <p className="font-body text-on-surface-variant leading-relaxed max-w-md mx-auto"
+                  style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)' }}>
+                  Join the next wave of high-performance enterprises. We handle
+                  the complexity, you enjoy the results.
+                </p>
+
+                <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
+                  {/* <Link href="/book-consultation"
+                    className="btn-primary gap-2.5 px-8 py-4 sm:px-10 sm:py-5 text-[11px] sm:text-xs">
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>schedule</span>
+                    Book Free Consultation
+                  </Link> */}
+                  <Link href="/book-consultation"
+                    className="btn-ghost gap-2.5 px-8 py-4 sm:px-10 sm:py-5 text-[11px] sm:text-xs">
+                    Contact Us
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
-      {/* ══════════════════ FOOTER ══════════════════ */}
-      <footer id="success"
-        className="border-t pt-12 sm:pt-14 md:pt-16 lg:pt-20 pb-8 relative overflow-hidden"
-        style={{ borderColor:'rgba(62,72,76,0.3)', background:'rgba(10,15,17,0.85)' }}>
-        <div className="teal-glow absolute -top-16 left-1/2 -translate-x-1/2 w-[400px] h-[200px] opacity-15 pointer-events-none" />
+      {/* ════════════════════════════════════════════════
+          FOOTER
+      ════════════════════════════════════════════════ */}
+      <footer
+        id="success"
+        className="relative overflow-hidden border-t"
+        style={{
+          borderColor: 'rgba(62,72,76,0.25)',
+          background: 'rgba(8,12,14,0.95)',
+        }}
+      >
+        {/* Top glow */}
+        <div className="teal-glow absolute -top-16 left-1/2 -translate-x-1/2 w-[600px] h-[200px] opacity-10 pointer-events-none" />
 
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 md:px-12 relative z-10">
-          {/* Grid: 1col → 2col → 4col */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-10 sm:mb-14 md:mb-16">
-            {/* Brand col */}
-            <div className="space-y-3 sm:space-y-4 sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background:'linear-gradient(135deg,#0b8da6,#70d4ef)' }}>
-                  <span className="material-symbols-outlined text-[#003641]"
-                    style={{ fontSize:'17px', fontVariationSettings:"'FILL' 1" }}>bolt</span>
-                </div>
-                <span className="font-display text-lg sm:text-xl text-on-surface">Ab Meliora</span>
+        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 md:px-12 relative z-10 pt-14 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
+          {/* Main footer row */}
+          <div className="flex flex-col sm:flex-row justify-between gap-10 sm:gap-12 mb-12 sm:mb-14">
+
+            {/* Brand */}
+            <div className="space-y-4 max-w-xs">
+              <div className="flex items-center gap-3">
+                
+                <span className="font-display text-base sm:text-lg text-on-surface tracking-tight">Ad Meliora</span>
               </div>
-              <p className="text-on-surface-variant font-body leading-relaxed max-w-xs
-                            text-sm sm:text-base">
+              <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
                 Better things through intelligent automation. The future of work, redefined for today.
               </p>
             </div>
 
-            {/* Link columns */}
-            {FOOTER_COLS.map((col) => (
-              <div key={col.title} className="space-y-3 sm:space-y-4">
-                <h5 className="font-label uppercase tracking-[0.2em] text-primary-teal font-semibold
-                               text-[10px] sm:text-xs md:text-sm">
-                  {col.title}
-                </h5>
-                {col.links.map((l) => (
-                  <a key={l.label} href={l.href}
-                    className="block text-on-surface-variant hover:text-primary-teal transition-colors font-body
-                               text-sm sm:text-base">
-                    {l.label}
-                  </a>
-                ))}
-              </div>
-            ))}
+            {/* Links */}
+            <div className="space-y-3 sm:space-y-4">
+              <h5 className="font-label uppercase tracking-[0.22em] text-primary-teal font-semibold" style={{ fontSize: '10px' }}>
+                Contact
+              </h5>
+              {[
+                { label: 'LinkedIn', href: '#' },
+                { label: 'Instagram', href: '#' },
+                { label: 'Chat with us', href: 'mailto:hello@admeliora.com' },
+              ].map((l) => (
+                <a key={l.label} href={l.href}
+                  className="block font-body text-on-surface-variant hover:text-primary-teal transition-colors duration-200 text-sm sm:text-base">
+                  {l.label}
+                </a>
+              ))}
+            </div>  
+
+         
           </div>
 
           {/* Bottom bar */}
           <div className="section-divider mb-6 sm:mb-8" />
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-            <p className="font-label uppercase tracking-[0.12em] text-on-surface-variant text-center sm:text-left
-                          text-[10px] sm:text-xs">
-              © 2024 Ab Meliora. All rights reserved.
+            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant text-center sm:text-left" style={{ fontSize: '9.5px' }}>
+              © 2026 Ad Meliora. All rights reserved.
             </p>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-teal" style={{ boxShadow:'0 0 6px #0b8da6' }} />
-              <span className="font-label uppercase tracking-[0.12em] text-on-surface-variant
-                               text-[10px] sm:text-xs">
-                System Status: Optimized
-              </span>
-            </div>
-            <div className="flex gap-4 sm:gap-6">
-              {['Privacy','Terms'].map((t) => (
-                <a key={t} href="#"
-                  className="font-label uppercase tracking-[0.12em] text-on-surface-variant hover:text-primary-teal transition-colors
-                             text-[10px] sm:text-xs">
-                  {t}
-                </a>
-              ))}
-            </div>
+            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant opacity-50" style={{ fontSize: '9.5px' }}>
+              Ad Meliora — Latin for "Towards Better Things"
+            </p>
           </div>
         </div>
       </footer>
