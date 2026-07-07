@@ -105,9 +105,9 @@ export default function BookConsultation() {
   };
 
   const fields = [
-    { id: 'name',    label: 'Full Name',       type: 'text',  placeholder: 'Jane Doe',                   required: true  },
-    { id: 'email',   label: 'Email Address',   type: 'email', placeholder: 'jane@company.com',           required: true  },
-    { id: 'company', label: 'Company',         type: 'text',  placeholder: 'Acme Corp (optional)',       required: false },
+    { id: 'name', label: 'Full Name', type: 'text', placeholder: 'Jane Doe', required: true },
+    { id: 'email', label: 'Email Address', type: 'email', placeholder: 'jane@company.com', required: true },
+    { id: 'company', label: 'Company', type: 'text', placeholder: 'Acme Corp (optional)', required: false },
   ];
 
   return (
@@ -136,7 +136,7 @@ export default function BookConsultation() {
       <div className="relative z-10 max-w-[880px] mx-auto px-5 sm:px-2 md:px-12 pb-24 sm:pb-32">
         <div className="  items-start">
 
-        
+
           {/* ══ RIGHT — Form card ══ */}
           <FadeUp delay={0.1} className="lg:sticky lg:top-28">
             <div
@@ -253,11 +253,10 @@ export default function BookConsultation() {
                               className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
                               style={{
                                 background: 'rgba(10,14,16,0.6)',
-                                border: `1px solid ${
-                                  focusedField === field.id
+                                border: `1px solid ${focusedField === field.id
                                     ? 'rgba(11,141,166,0.55)'
                                     : 'rgba(62,72,76,0.35)'
-                                }`,
+                                  }`,
                                 boxShadow:
                                   focusedField === field.id
                                     ? '0 0 0 3px rgba(11,141,166,0.08), 0 0 16px rgba(11,141,166,0.08)'
@@ -295,11 +294,10 @@ export default function BookConsultation() {
                         className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
                         style={{
                           background: 'rgba(10,14,16,0.6)',
-                          border: `1px solid ${
-                            focusedField === 'company'
+                          border: `1px solid ${focusedField === 'company'
                               ? 'rgba(11,141,166,0.55)'
                               : 'rgba(62,72,76,0.35)'
-                          }`,
+                            }`,
                           boxShadow:
                             focusedField === 'company'
                               ? '0 0 0 3px rgba(11,141,166,0.08), 0 0 16px rgba(11,141,166,0.08)'
@@ -330,11 +328,10 @@ export default function BookConsultation() {
                         className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40 resize-none"
                         style={{
                           background: 'rgba(10,14,16,0.6)',
-                          border: `1px solid ${
-                            focusedField === 'message'
+                          border: `1px solid ${focusedField === 'message'
                               ? 'rgba(11,141,166,0.55)'
                               : 'rgba(62,72,76,0.35)'
-                          }`,
+                            }`,
                           boxShadow:
                             focusedField === 'message'
                               ? '0 0 0 3px rgba(11,141,166,0.08), 0 0 16px rgba(11,141,166,0.08)'
@@ -381,7 +378,7 @@ export default function BookConsultation() {
                         </>
                       ) : (
                         <>
-                          
+
                           Request Consultation
                         </>
                       )}

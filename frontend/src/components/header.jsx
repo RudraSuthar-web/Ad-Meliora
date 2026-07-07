@@ -10,7 +10,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled]     = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
@@ -49,18 +49,17 @@ export default function Header() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
             ? 'bg-[rgba(10,14,16,0.92)] border-b border-[rgba(62,72,76,0.35)] shadow-[0_4px_32px_rgba(0,0,0,0.35)]'
             : 'bg-transparent border-b border-transparent'
-        }`}
+          }`}
         style={{ backdropFilter: scrolled ? 'blur(24px)' : 'none', WebkitBackdropFilter: scrolled ? 'blur(24px)' : 'none' }}
       >
         <div className="flex justify-between items-center h-[68px] sm:h-[76px] md:h-[70px] lg:h-[80px] px-5 sm:px-8 lg:px-12 max-w-[1280px] mx-auto">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 no-underline flex-shrink-0 group" aria-label="Ad Meliora Home">
-           
+
             <span className="font-display text-[25px] sm:text-[25px] md:text-[20px] lg:text-[22px] tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">
               Ad Meliora
             </span>
@@ -70,20 +69,19 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-1 lg:gap-2">
             {NAV_LINKS.map((l) => (
               <a key={l.href} href={l.href}
-                className={`relative px-4 py-2 font-label text-[9px] lg:text-[10px] uppercase tracking-[0.18em] transition-colors duration-200 rounded-lg ${
-                  activeSection === l.href.replace('#','')
+                className={`relative px-4 py-2 font-label text-[9px] lg:text-[10px] uppercase tracking-[0.18em] transition-colors duration-200 rounded-lg ${activeSection === l.href.replace('#', '')
                     ? 'text-primary-teal'
                     : 'text-on-surface-variant hover:text-on-surface'
-                }`}>
-                {activeSection === l.href.replace('#','') && (
-                 <motion.span 
-  layoutId="nav-pill" 
-  className="absolute inset-x-0 bottom-0 h-1" 
-  initial={{ scaleX: 0, originY: 1 }}
-  animate={{ scaleX: 1, originY: 1 }}
-  style={{ borderBottom: '1px solid rgba(11,141,166,0.5)' }} 
-  transition={{ type: 'spring', stiffness: 400, damping: 35 }} 
-/>
+                  }`}>
+                {activeSection === l.href.replace('#', '') && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-x-0 bottom-0 h-1"
+                    initial={{ scaleX: 0, originY: 1 }}
+                    animate={{ scaleX: 1, originY: 1 }}
+                    style={{ borderBottom: '1px solid rgba(11,141,166,0.5)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                  />
 
                 )}
                 <span className="relative z-10">{l.label}</span>

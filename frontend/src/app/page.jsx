@@ -9,7 +9,7 @@ import {
   useInView,
 } from 'framer-motion';
 import Footer from '../components/footer';
-import { FadeUp} from '../functions/fadeup';
+import { FadeUp } from '../functions/fadeup';
 import { StaggerContainer } from '../functions/staggercontainer';
 import Chatbot from '../components/chatbot';
 
@@ -18,7 +18,7 @@ import Chatbot from '../components/chatbot';
 
 const cardVariant = {
   hidden: { opacity: 0, y: 40 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
 /* ─── Data ─────────────────────────────────────────── */
@@ -68,13 +68,13 @@ const STEPS = [
 export default function Page() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY    = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
     <main className="overflow-x-hidden" style={{ background: '#0a0e10' }}>
-   <Chatbot />
-  <section
+      <Chatbot />
+      <section
         ref={heroRef}
         className="relative min-h-[90svh] flex flex-col items-center justify-center text-center
                    px-5 sm:px-8 overflow-hidden"
@@ -82,7 +82,7 @@ export default function Page() {
         {/* Grid background */}
         <div className="grid-bg absolute inset-0 pointer-events-none" />
 
-        {/* Ambient glows */} 
+        {/* Ambient glows */}
         <div className="teal-glow absolute -top-32 -left-32 w-[600px] h-[600px] opacity-30 pointer-events-none" />
         <div className="gold-glow absolute top-1/2 right-0 w-[500px] h-[500px] opacity-20 pointer-events-none" />
         <div className="teal-glow absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] opacity-10 pointer-events-none" />
@@ -92,7 +92,7 @@ export default function Page() {
           style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 flex flex-col items-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 max-w-4xl mx-auto pt-25 lg:pt-28 sm:pt-18"
         >
-         
+
 
           {/* H1 */}
           <motion.h1
@@ -133,11 +133,11 @@ export default function Page() {
             <Link href="/book-consultation"
               className="btn-primary gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs">
               Contact Us
-           </Link> 
+            </Link>
           </motion.div>
         </motion.div>
-      </section>  
-      
+      </section>
+
       {/* Services */}
       <section
         id="solutions"
@@ -376,7 +376,7 @@ export default function Page() {
         </div>
       </section>
 
- <Footer />
+      <Footer />
 
     </main>
   );

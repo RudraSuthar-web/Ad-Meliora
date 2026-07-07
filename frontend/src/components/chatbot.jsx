@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,7 +40,7 @@ export default function Chatbot() {
             className=" rounded-2xl border border-white/10 bg-[rgba(11,16,18,0.96)] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
           >
             <div className="flex items-start ">
-              
+
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-start gap-3 justify-between">
@@ -48,7 +48,7 @@ export default function Chatbot() {
                     {/* <p className="font-label text-[10px] uppercase tracking-[0.22em] text-on-surface-variant">
                       Ad Meliora Assistant
                     </p> */}
-                    <h3 className="font-display text-md sm:text-md  lg:text-lg text-on-surface">
+                    <h3 className="font-display text-md sm:text-md  lg:text-md text-on-surface">
                       How may I help you?
                     </h3>
                   </div>
@@ -64,7 +64,7 @@ export default function Chatbot() {
                     </span>
                   </button>
                 </div>
-{/* 
+                {/* 
                 <p className="mt-2 font-body text-sm leading-relaxed text-on-surface-variant">
                   Start a consultation and tell us what you need. We’ll route you to the right next step.
                 </p>
@@ -99,9 +99,9 @@ export default function Chatbot() {
         <Image
           src="/robot-mascot.png"
           alt="Robot mascot"
-          width={100}
-          height={100}
-          className="relative z-10 h-25 w-25 object-contain drop-shadow-[0_0_12px_rgba(11,141,166,0.35)] opacity-90 transition-all duration-200 hover:scale-110 hover:opacity-100"
+          width={80}
+          height={80}
+          className="relative z-10 h-30 w-30 sm:h-30 sm:w-30 md:h-40 md:w-40 object-contain drop-shadow-[0_0_12px_rgba(11,141,166,0.35)] opacity-90 transition-all duration-200 hover:scale-110 hover:opacity-100"
           priority
         />
       </Link>
