@@ -26,16 +26,16 @@ export default function Footer() {
             <div className="space-y-4 max-w-xs">
               <div className="flex items-center gap-3">
                 
-                <span className="font-display text-base sm:text-lg text-on-surface tracking-tight">Ad Meliora</span>
+                <span className="font-display text-lg sm:text-xl text-on-surface tracking-tight">Ad Meliora</span>
               </div>
-              <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
+              <p className="font-body text-on-surface-variant leading-relaxed text-md sm:text-md md:text-[15px] xl:text-base">
                 Better things through intelligent automation. The future of work, redefined for today.
               </p>
             </div>
 
             {/* Links */}
             <div className="space-y-3 sm:space-y-4">
-              <h5 className="font-label uppercase tracking-[0.22em] text-primary-teal font-semibold" style={{ fontSize: '10px' }}>
+              <h5 className="font-label uppercase tracking-[0.22em] text-primary-teal font-semibold" style={{ fontSize: '12px' }}>
                 Contact
               </h5>
               {[
@@ -44,7 +44,7 @@ export default function Footer() {
                 { label: 'Chat with us', href: 'mailto:hello@admeliora.com' },
               ].map((l) => (
                 <a key={l.label} href={l.href } target="_blank" rel="noopener noreferrer"
-                  className="block font-body text-on-surface-variant hover:text-primary-teal transition-colors duration-200 text-sm sm:text-base">
+                  className="block font-body text-on-surface-variant hover:text-primary-teal transition-colors duration-200 text-md sm:text-md md:text-[15px] xl:text-base">
                   {l.label}
                 </a>
               ))}
@@ -56,10 +56,10 @@ export default function Footer() {
           {/* Bottom bar */}
           <div className="section-divider mb-6 sm:mb-8" />
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant text-center sm:text-left" style={{ fontSize: '9.5px' }}>
+            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant text-center sm:text-left" style={{ fontSize: '10px' }}>
               © 2026 Ad Meliora. All rights reserved.
             </p>
-            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant opacity-50" style={{ fontSize: '9.5px' }}>
+            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant opacity-50" style={{ fontSize: '10px' }}>
               Ad Meliora
             </p>
           </div>

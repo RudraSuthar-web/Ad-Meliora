@@ -61,7 +61,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 no-underline flex-shrink-0 group" aria-label="Ad Meliora Home">
            
-            <span className="font-display text-[15px] sm:text-[17px] md:text-[20px] lg:text-[22px] tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">
+            <span className="font-display text-[25px] sm:text-[25px] md:text-[20px] lg:text-[22px] tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">
               Ad Meliora
             </span>
           </Link>
@@ -133,8 +133,8 @@ export default function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center gap-2"
-            style={{ background: 'rgba(10,14,16,0.97)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
+            className="fixed inset-0 z-40 md:hidden flex uppercase font-label flex-col items-center justify-center gap-2"
+            style={{ background: 'rgba(10,14,16,0.87)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' }}
           >
             {NAV_LINKS.map((l, i) => (
               <motion.a
@@ -144,7 +144,7 @@ export default function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 12 }}
                 transition={{ delay: i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-4xl sm:text-5xl text-on-surface hover:text-primary-teal transition-colors duration-300 py-3"
+                className="font-display text-2xl sm:text-2xl text-on-surface-varient hover:text-primary-teal transition-colors duration-300 py-3"
                 onClick={() => setMobileOpen(false)}
               >
                 {l.label}
@@ -160,8 +160,7 @@ export default function Header() {
               <Link href="/book-consultation"
                 onClick={() => setMobileOpen(false)}
                 className="btn-primary px-10 py-4 text-xs gap-2">
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>schedule</span>
-                Book a Call
+                Contact Us
               </Link>
             </motion.div>
 

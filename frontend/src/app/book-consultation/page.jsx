@@ -122,7 +122,7 @@ export default function BookConsultation() {
       <div className="grid-bg absolute inset-0 pointer-events-none opacity-60" />
 
       {/* ── Back link ── */}
-      <div className="relative z-10 pt-10 sm:pt-32 lg:pt-25 pb-4 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
+      <div className="relative z-10 pt-20 sm:pt-20 lg:pt-25 pb-4 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
         <Link
           href="/"
           className="inline-flex items-center gap-2 font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary-teal transition-colors duration-200"
@@ -133,7 +133,7 @@ export default function BookConsultation() {
       </div>
 
       {/* ── Main layout ── */}
-      <div className="relative z-10 max-w-[880px] mx-auto px-5 sm:px-8 md:px-12 pb-24 sm:pb-32">
+      <div className="relative z-10 max-w-[880px] mx-auto px-5 sm:px-2 md:px-12 pb-24 sm:pb-32">
         <div className="  items-start">
 
         
@@ -168,7 +168,7 @@ export default function BookConsultation() {
                 }}
               />
 
-              <div className="relative z-10 p-8 sm:p-10 md:p-9 lg:p-10 xl:p-12">
+              <div className="relative z-10 p-5 sm:p-6 md:p-9 lg:p-10 xl:p-12">
                 {/* Form header */}
                 <div className="mb-8">
                   <h2
@@ -177,7 +177,7 @@ export default function BookConsultation() {
                   >
                     Send us a message
                   </h2>
-                  <p className="font-body text-on-surface-variant text-sm sm:text-base md:text-sm lg:text-[15px] xl:text-base">
+                  <p className="font-body text-on-surface-variant text-md sm:text-sm md:text-sm lg:text-[15px] xl:text-base">
                     Fill in the details below and we'll get back to you within 24 hours.
                   </p>
                 </div>
@@ -230,7 +230,7 @@ export default function BookConsultation() {
                           <label
                             htmlFor={field.id}
                             className="font-label uppercase tracking-[0.18em] text-on-surface-variant"
-                            style={{ fontSize: '9px' }}
+                            style={{ fontSize: '13px' }}
                           >
                             {field.label}
                             {field.required && (
@@ -250,7 +250,7 @@ export default function BookConsultation() {
                               onFocus={() => setFocusedField(field.id)}
                               onBlur={() => setFocusedField(null)}
                               placeholder={field.placeholder}
-                              className="w-full font-body text-on-surface text-sm sm:text-base md:text-sm lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
+                              className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
                               style={{
                                 background: 'rgba(10,14,16,0.6)',
                                 border: `1px solid ${
@@ -279,7 +279,7 @@ export default function BookConsultation() {
                       <label
                         htmlFor="company"
                         className="font-label uppercase tracking-[0.18em] text-on-surface-variant"
-                        style={{ fontSize: '9px' }}
+                        style={{ fontSize: '13px' }}
                       >
                         {fields[2].label}
                       </label>
@@ -292,7 +292,7 @@ export default function BookConsultation() {
                         onFocus={() => setFocusedField('company')}
                         onBlur={() => setFocusedField(null)}
                         placeholder={fields[2].placeholder}
-                        className="w-full font-body text-on-surface text-sm sm:text-base md:text-sm lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
+                        className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40"
                         style={{
                           background: 'rgba(10,14,16,0.6)',
                           border: `1px solid ${
@@ -313,7 +313,7 @@ export default function BookConsultation() {
                       <label
                         htmlFor="message"
                         className="font-label uppercase tracking-[0.18em] text-on-surface-variant"
-                        style={{ fontSize: '9px' }}
+                        style={{ fontSize: '13px' }}
                       >
                         Your Objective <span className="text-primary-teal">*</span>
                       </label>
@@ -327,7 +327,7 @@ export default function BookConsultation() {
                         onFocus={() => setFocusedField('message')}
                         onBlur={() => setFocusedField(null)}
                         placeholder="We are looking to automate our data ingestion pipeline and reduce manual handoffs across our team…"
-                        className="w-full font-body text-on-surface text-sm sm:text-base md:text-sm lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40 resize-none"
+                        className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40 resize-none"
                         style={{
                           background: 'rgba(10,14,16,0.6)',
                           border: `1px solid ${
@@ -389,7 +389,7 @@ export default function BookConsultation() {
 
                     <p
                       className="font-body text-on-surface-variant text-center leading-relaxed"
-                      style={{ fontSize: '10.5px' }}
+                      style={{ fontSize: '12  px' }}
                     >
                       By submitting, you agree to our privacy policy. We never share your data.
                     </p>

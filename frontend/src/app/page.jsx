@@ -150,7 +150,7 @@ export default function Page() {
         <FadeUp className="text-center mb-14 sm:mb-18 md:mb-20 space-y-4 sm:space-y-5">
           <div className="hud-chip mx-auto">Specialized Solutions</div>
           <h2 className="font-display font-normal text-on-surface"
-            style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', lineHeight: '1.1' }}>
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: '1.1' }}>
             Built for Precision
           </h2>
           <p className="font-body text-on-surface-variant leading-relaxed max-w-lg mx-auto"
@@ -189,7 +189,7 @@ export default function Page() {
               <h3 className="font-display font-normal text-on-surface mb-3 text-xl sm:text-2xl md:text-[1.4rem] lg:text-[1.5rem] xl:text-2xl">
                 {svc.title}
               </h3>
-              <p className="font-body text-on-surface-variant leading-relaxed mb-7 flex-grow text-sm sm:text-base md:text-[15px] xl:text-base">
+              <p className="font-body text-on-surface-variant leading-relaxed mb-7 flex-grow text-md sm:text-md md:text-[15px] xl:text-base">
                 {svc.desc}
               </p>
 
@@ -219,7 +219,7 @@ export default function Page() {
           <FadeUp className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5 lg:mb-24">
             <div className="hud-chip mx-auto">The Automation Pipeline</div>
             <h2 className="font-display font-normal text-on-surface"
-              style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', lineHeight: '1.1' }}>
+              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: '1.1' }}>
               From Signal to Scale
             </h2>
             <p className="font-body text-on-surface-variant leading-relaxed max-w-md mx-auto"
@@ -264,7 +264,7 @@ export default function Page() {
                     <h4 className="font-display font-normal text-on-surface  text-xl sm:text-2xl leading-tight">
                       {step.title}
                     </h4>
-                    <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
+                    <p className="font-body text-on-surface-variant leading-relaxed text-md sm:text-md md:text-[15px] xl:text-base">
                       {step.desc}
                     </p>
                   </div>
