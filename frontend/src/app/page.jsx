@@ -8,43 +8,13 @@ import {
   useTransform,
   useInView,
 } from 'framer-motion';
-
-/* ── Reusable fade-up animation wrapper ── */
-function FadeUp({ children, delay = 0, className = '' }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px 0px' });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import Footer from '../components/footer';
+import { FadeUp} from '../functions/fadeup';
+import { StaggerContainer } from '../functions/staggercontainer';
+import Chatbot from '../components/chatbot';
 
 /* ── Stagger children wrapper ── */
-function StaggerContainer({ children, className = '' }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px 0px' });
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={inView ? 'show' : 'hidden'}
-      variants={{
-        hidden: {},
-        show: { transition: { staggerChildren: 0.12 } },
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+
 
 const cardVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -103,34 +73,14 @@ export default function Page() {
 
   return (
     <main className="overflow-x-hidden" style={{ background: '#0a0e10' }}>
-    
-      <Link
-        href="/book-consultation"
-        aria-label="Open consultation"
-        className="fixed bottom-4 right-4 z-50 group flex items-end gap-3 rounded-full  px-3 py-2  backdrop-blur-lg transition-all duration-200 hover:scale-110 "
-      >
-        
-         <Image
-            src="/robot-mascot.png"
-            alt="Robot mascot"
-            width={100}
-            height={100}
-            className="relative z-10 h-20 w-20 object-contain drop-shadow-[0_0_12px_rgba(11,141,166,0.35)]"
-            priority
-          />
-        
-      </Link>
-
-      {/* ═══════════════════ ═════════════════════════════
-          HERO
-      ════════════════════════════════════════════════ */}  
-      <section
+   <Chatbot />
+  <section
         ref={heroRef}
         className="relative min-h-[90svh] flex flex-col items-center justify-center text-center
                    px-5 sm:px-8 overflow-hidden"
       >
         {/* Grid background */}
-        <div className="grid-bg absolute inset-0 pointer-events-none opacity-80" />
+        <div className="grid-bg absolute inset-0 pointer-events-none" />
 
         {/* Ambient glows */} 
         <div className="teal-glow absolute -top-32 -left-32 w-[600px] h-[600px] opacity-30 pointer-events-none" />
@@ -170,7 +120,7 @@ export default function Page() {
             style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)' }}
           >
             Get clarity on your AI potential. We bridge the gap between complex data
-            and actionable automation — with zero disruption to your stack.
+            and actionable automation - with zero disruption to your stack.
           </motion.p>
 
           {/* CTAs */}
@@ -183,42 +133,12 @@ export default function Page() {
             <Link href="/book-consultation"
               className="btn-primary gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs">
               Contact Us
-           </Link> {/* 
-            <Link href="/book-consultation"
-              className="btn-ghost gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs">
-              Book Free AI Audit
-            </Link> */}
+           </Link> 
           </motion.div>
-
-          {/* Trust indicators */}
-          {/* <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex items-center gap-4 sm:gap-6 mt-4"
-          >
-            {[
-              { value: '200+', label: 'Integrations' },
-              { value: '60+',  label: 'Clients' },
-              { value: '99.9%', label: 'Uptime SLA' },
-            ].map((stat, i) => (
-              <React.Fragment key={stat.label}>
-                {i > 0 && <div className="w-px h-6 bg-outline-variant opacity-40" />}
-                <div className="text-center">
-                  <div className="font-display text-primary-teal text-sm sm:text-base font-normal">{stat.value}</div>
-                  <div className="font-label text-on-surface-variant uppercase tracking-[0.14em]" style={{ fontSize: '9px' }}>{stat.label}</div>
-                </div>
-              </React.Fragment>
-            ))}
-          </motion.div> */}
         </motion.div>
-
-    
-      </section>
-
-      {/* ════════════════════════════════════════════════
-          SERVICES
-      ════════════════════════════════════════════════ */}
+      </section>  
+      
+      {/* Services */}
       <section
         id="solutions"
         className="py-24 sm:py-28 md:py-32 lg:py-36 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto relative"
@@ -230,7 +150,7 @@ export default function Page() {
         <FadeUp className="text-center mb-14 sm:mb-18 md:mb-20 space-y-4 sm:space-y-5">
           <div className="hud-chip mx-auto">Specialized Solutions</div>
           <h2 className="font-display font-normal text-on-surface"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: '1.1' }}>
+            style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', lineHeight: '1.1' }}>
             Built for Precision
           </h2>
           <p className="font-body text-on-surface-variant leading-relaxed max-w-lg mx-auto"
@@ -280,12 +200,10 @@ export default function Page() {
         </StaggerContainer>
       </section>
 
-      {/* ════════════════════════════════════════════════
-          PIPELINE / METHODOLOGY
-      ════════════════════════════════════════════════ */}
+      {/**/}
       <section
         id="methodology"
-        className="py-15 sm:py-18 md:py-32 lg:py-36 px-5 sm:px-8 md:px-12 relative"
+        className="py-15 sm:py-18 md:py-32 lg:py-20 px-5 sm:px-8 md:px-12 relative"
         style={{ background: 'rgba(11,141,166,0.022)' }}
       >
         {/* Top/Bottom fade */}
@@ -298,10 +216,10 @@ export default function Page() {
 
         <div className="max-w-[880px] mx-auto">
           {/* Header */}
-          <FadeUp className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5">
+          <FadeUp className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5 lg:mb-24">
             <div className="hud-chip mx-auto">The Automation Pipeline</div>
             <h2 className="font-display font-normal text-on-surface"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: '1.1' }}>
+              style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', lineHeight: '1.1' }}>
               From Signal to Scale
             </h2>
             <p className="font-body text-on-surface-variant leading-relaxed max-w-md mx-auto"
@@ -343,7 +261,7 @@ export default function Page() {
                   </div>
 
                   <div className="min-w-0 space-y-2 pt-1">
-                    <h4 className="font-display font-normal text-on-surface text-xl sm:text-2xl leading-tight">
+                    <h4 className="font-display font-normal text-on-surface  text-xl sm:text-2xl leading-tight">
                       {step.title}
                     </h4>
                     <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
@@ -388,7 +306,7 @@ export default function Page() {
                       />
                     </div>
 
-                    <h4 className="font-display font-normal text-on-surface text-[1.45rem] lg:text-[1.6rem] xl:text-[1.8rem] leading-tight text-left">
+                    <h4 className="font-display font-normal backdrop-blur-sm text-on-surface text-[1.45rem] lg:text-[1.6rem] xl:text-[1.8rem] leading-tight text-left">
                       {step.title}
                     </h4>
                   </div>
@@ -403,9 +321,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════
-          CTA BANNER
-      ════════════════════════════════════════════════ */}
+      {/*About*/}
       <section
         id="about"
         className="py-16 sm:py-20 md:py-24 lg:py-28 px-5 sm:px-8 md:px-12"
@@ -430,7 +346,7 @@ export default function Page() {
 
                 <h2
                   className="font-display font-normal text-on-surface leading-[1.1]"
-                  style={{ fontSize: 'clamp(1.9rem, 5vw, 4rem)' }}
+                  style={{ fontSize: 'clamp(1.9rem, 5vw, 3.5rem)' }}
                 >
                   Ready to reclaim
                   <br className="hidden sm:block" />
@@ -460,67 +376,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════
-          FOOTER
-      ════════════════════════════════════════════════ */}
-      <footer
-        id="success"
-        className="relative overflow-hidden border-t"
-        style={{
-          borderColor: 'rgba(62,72,76,0.25)',
-          background: 'rgba(8,12,14,0.95)',
-        }}
-      >
-        {/* Top glow */}
-        <div className="teal-glow absolute -top-16 left-1/2 -translate-x-1/2 w-[600px] h-[200px] opacity-10 pointer-events-none" />
-
-        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 md:px-12 relative z-10 pt-14 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
-          {/* Main footer row */}
-          <div className="flex flex-col sm:flex-row justify-between gap-10 sm:gap-12 mb-12 sm:mb-14">
-
-            {/* Brand */}
-            <div className="space-y-4 max-w-xs">
-              <div className="flex items-center gap-3">
-                
-                <span className="font-display text-base sm:text-lg text-on-surface tracking-tight">Ad Meliora</span>
-              </div>
-              <p className="font-body text-on-surface-variant leading-relaxed text-sm sm:text-base">
-                Better things through intelligent automation. The future of work, redefined for today.
-              </p>
-            </div>
-
-            {/* Links */}
-            <div className="space-y-3 sm:space-y-4">
-              <h5 className="font-label uppercase tracking-[0.22em] text-primary-teal font-semibold" style={{ fontSize: '10px' }}>
-                Contact
-              </h5>
-              {[
-                { label: 'LinkedIn', href: '#' },
-                { label: 'Instagram', href: '#' },
-                { label: 'Chat with us', href: 'mailto:hello@admeliora.com' },
-              ].map((l) => (
-                <a key={l.label} href={l.href}
-                  className="block font-body text-on-surface-variant hover:text-primary-teal transition-colors duration-200 text-sm sm:text-base">
-                  {l.label}
-                </a>
-              ))}
-            </div>  
-
-         
-          </div>
-
-          {/* Bottom bar */}
-          <div className="section-divider mb-6 sm:mb-8" />
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant text-center sm:text-left" style={{ fontSize: '9.5px' }}>
-              © 2026 Ad Meliora. All rights reserved.
-            </p>
-            <p className="font-label uppercase tracking-[0.14em] text-on-surface-variant opacity-50" style={{ fontSize: '9.5px' }}>
-              Ad Meliora — Latin for "Towards Better Things"
-            </p>
-          </div>
-        </div>
-      </footer>
+ <Footer />
 
     </main>
   );

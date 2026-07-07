@@ -54,15 +54,42 @@ export default function BookConsultation() {
     company: '',
     message: '',
   });
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [focusedField, setFocusedField] = useState(null);
 
+  const isValidEmail = (value) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === 'email' && errors.email) {
+      setErrors((currentErrors) => {
+        const nextErrors = { ...currentErrors };
+        delete nextErrors.email;
+        return nextErrors;
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nextErrors = {};
+    if (!isValidEmail(formData.email)) {
+      nextErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      setStatus('idle');
+      return;
+    }
+
+    setErrors({});
     setStatus('loading');
     try {
       await addDoc(collection(db, 'consultations'), {
@@ -95,7 +122,7 @@ export default function BookConsultation() {
       <div className="grid-bg absolute inset-0 pointer-events-none opacity-60" />
 
       {/* ── Back link ── */}
-      <div className="relative z-10 pt-10 sm:pt-32 pb-4 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
+      <div className="relative z-10 pt-10 sm:pt-32 lg:pt-25 pb-4 px-5 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
         <Link
           href="/"
           className="inline-flex items-center gap-2 font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary-teal transition-colors duration-200"
@@ -173,9 +200,9 @@ export default function BookConsultation() {
                     >
                       <span
                         className="material-symbols-outlined text-primary-teal"
-                        style={{ fontSize: '30px' }}
+                        style={{ fontSize: '40px' }}
                       >
-                        check_circle
+                        check
                       </span>
                     </div>
                     <div>
@@ -216,6 +243,8 @@ export default function BookConsultation() {
                               id={field.id}
                               name={field.id}
                               required={field.required}
+                              aria-invalid={field.id === 'email' && Boolean(errors.email)}
+                              aria-describedby={field.id === 'email' && errors.email ? 'email-error' : undefined}
                               value={formData[field.id]}
                               onChange={handleChange}
                               onFocus={() => setFocusedField(field.id)}
@@ -236,6 +265,11 @@ export default function BookConsultation() {
                               }}
                             />
                           </div>
+                          {field.id === 'email' && errors.email && (
+                            <p id="email-error" className="font-body text-xs text-red-400">
+                              {errors.email}
+                            </p>
+                          )}
                         </div>
                       ))}
                     </div>
