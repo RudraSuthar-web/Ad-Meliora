@@ -9,7 +9,7 @@ import { db } from '../../lib/firebase';
 /* ── Reusable fade-up animation wrapper ── */
 function FadeUp({ children, delay = 0, className = '' }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px 0px' });
+  const inView = useInView(ref, { once: true, amount: 0.12 });
   return (
     <motion.div
       ref={ref}

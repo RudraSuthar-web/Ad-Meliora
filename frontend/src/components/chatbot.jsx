@@ -7,6 +7,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Chatbot() {
   const [isPromptVisible, setIsPromptVisible] = useState(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Set to `true` to force animations even when user prefers reduced motion.
+  const forceAnimate = false;
+  const shouldAnimate = forceAnimate || !prefersReducedMotion;
+
+  const motionInitial = shouldAnimate ? { opacity: 0, y: 16, scale: 0.96 } : { opacity: 1, y: 0, scale: 1 };
+  const motionAnimate = { opacity: 1, y: 0, scale: 1 };
+  const motionExit = shouldAnimate ? { opacity: 0, y: 12, scale: 0.96 } : { opacity: 1, y: 0, scale: 1 };
 
   useEffect(() => {
     const dismissed = typeof window !== 'undefined' && window.sessionStorage.getItem('chatbot-prompt-dismissed');
@@ -33,10 +51,10 @@ export default function Chatbot() {
       <AnimatePresence>
         {isPromptVisible && (
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            initial={motionInitial}
+            animate={motionAnimate}
+            exit={motionExit}
+            transition={{ duration: shouldAnimate ? 0.25 : 0, ease: [0.22, 1, 0.36, 1] }}
             className=" rounded-2xl border border-white/10 bg-[rgba(11,16,18,0.96)] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
           >
             <div className="flex items-start ">

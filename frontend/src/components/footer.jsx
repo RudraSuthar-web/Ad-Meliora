@@ -18,7 +18,7 @@ export default function Footer() {
       {/* Top glow */}
       <div className="teal-glow absolute -top-16 left-1/2 -translate-x-1/2 w-[600px] h-[200px] opacity-10 pointer-events-none" />
 
-      <div className="max-w-[1480px] mx-auto pl-5 sm:pl-8 md:pl-10 pr-60 relative z-10 pt-14 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
+      <div className="max-w-[1480px] mx-auto pl-5 sm:pl-8 md:pl-10 md:pr-60 relative z-10 pt-14 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
         {/* Main footer row */}
         <div className="flex flex-col sm:flex-row justify-between gap-10 sm:gap-12 mb-12 sm:mb-14">
 

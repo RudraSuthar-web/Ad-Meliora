@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 
 export  function StaggerContainer({ children, className = '' }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px 0px' });
+  const inView = useInView(ref, { once: true, amount: 0.12 });
   return (
     <motion.div
       ref={ref}

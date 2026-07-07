@@ -5,7 +5,7 @@ import Footer from '../components/footer';
 /* ── Reusable fade-up animation wrapper ── */
 export  function FadeUp({ children, delay = 0, className = '' }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px 0px' });
+  const inView = useInView(ref, { once: true, amount: 0.12 });
   return (
     <motion.div
       ref={ref}
