@@ -14,8 +14,13 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    const onScroll = () => {
+      const isScrolled = window.scrollY > 48;
+      setScrolled(isScrolled);
+      if (!isScrolled) setActiveSection('');
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
