@@ -328,7 +328,7 @@ export default function Page() {
       >
         <div className="max-w-[1280px] mx-auto">
           <FadeUp>
-            <div className="glass-card relative overflow-hidden text-center
+            <div className="glass-card relative overflow-hidden
                             rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[2.35rem] lg:rounded-[2.6rem] xl:rounded-[3rem]
                             p-10 sm:p-14 md:p-12 lg:p-14 xl:p-20">
 
@@ -341,34 +341,46 @@ export default function Page() {
               <div className="absolute inset-0 rounded-[inherit] pointer-events-none"
                 style={{ boxShadow: 'inset 0 0 60px rgba(11,141,166,0.04)' }} />
 
-              <div className="relative z-10 space-y-6 sm:space-y-7 md:space-y-8">
-                <div className="hud-chip mx-auto">Ready to Transform?</div>
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center text-left">
+                {/* Left Column (Who We Are) */}
+                <div className="md:col-span-7 space-y-5 sm:space-y-6">
+                  <div className="hud-chip">Who We Are</div>
 
-                <h2
-                  className="font-display font-normal text-on-surface leading-[1.1]"
-                  style={{ fontSize: 'clamp(1.9rem, 5vw, 3.5rem)' }}
-                >
-                  Ready to reclaim
-                  <br className="hidden sm:block" />
-                  {' '}your time?
-                </h2>
+                  <h2
+                    className="font-display font-normal text-on-surface leading-[1.1]"
+                    style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
+                  >
+                    We bridge the gap between complex data and <span className="gradient-text">actionable automation</span>.
+                  </h2>
 
-                <p className="font-body text-on-surface-variant leading-relaxed max-w-md mx-auto"
-                  style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)' }}>
-                  Join the next wave of high-performance enterprises. We handle
-                  the complexity, you enjoy the results.
-                </p>
+                  <p className="font-body text-on-surface-variant leading-relaxed text-md sm:text-md md:text-[15px] xl:text-base">
+                    At Ad Meliora, we engineer custom AI workflow pipelines, autonomous nodes, and integration systems designed to fit your unique operational architecture. We operate on a simple premise: technology should adapt to your business processes—not the other way around. By streamlining manual bottlenecks, we empower teams to reclaim valuable time and maximize productivity.
+                  </p>
+                </div>
 
-                <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
-                  {/* <Link href="/book-consultation"
-                    className="btn-primary gap-2.5 px-8 py-4 sm:px-10 sm:py-5 text-[11px] sm:text-xs">
-                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>schedule</span>
-                    Book Free Consultation
-                  </Link> */}
-                  <Link href="/book-consultation"
-                    className="btn-ghost gap-2.5 px-8 py-4 sm:px-10 sm:py-5 text-[11px] sm:text-xs">
-                    Contact Us
-                  </Link>
+                {/* Right Column (CTA Card) */}
+                <div className="md:col-span-5 w-full flex justify-center">
+                  <div
+                    className="p-8 sm:p-10 rounded-[1.5rem] md:rounded-[1.75rem] border text-center flex flex-col items-center gap-6 w-full max-w-sm md:max-w-none"
+                    style={{
+                      background: 'rgba(10,14,16,0.5)',
+                      borderColor: 'rgba(62,72,76,0.18)'
+                    }}
+                  >
+                    <h3
+                      className="font-display font-normal text-on-surface leading-snug"
+                      style={{ fontSize: 'clamp(1.35rem, 2.5vw, 1.7rem)' }}
+                    >
+                      Ready to reclaim your time?
+                    </h3>
+                    <p className="font-body text-on-surface-variant leading-relaxed text-[14px]">
+                      Partner with us to deploy seamless intelligence into your stack with zero disruption.
+                    </p>
+                    <Link href="/book-consultation"
+                      className="btn-primary gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs w-full">
+                      Contact Us
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
