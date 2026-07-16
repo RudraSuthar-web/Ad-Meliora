@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
-  { label: 'Our Services', href: '#solutions' },
-  { label: 'About', href: '#about' },
+  { label: 'Our Services', href: '/#solutions', section: 'solutions' },
+  { label: 'About', href: '/#about', section: 'about' },
 ];
 
 export default function Header() {
@@ -32,7 +32,7 @@ export default function Header() {
 
   /* Track active section */
   useEffect(() => {
-    const sections = NAV_LINKS.map(l => l.href.replace('#', ''));
+    const sections = NAV_LINKS.map(l => l.section);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -74,11 +74,11 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-1 lg:gap-2">
             {NAV_LINKS.map((l) => (
               <a key={l.href} href={l.href}
-                className={`relative px-4 py-2 font-label text-[9px] lg:text-[10px] uppercase tracking-[0.18em] transition-colors duration-200 rounded-lg ${activeSection === l.href.replace('#', '')
+                className={`relative px-4 py-2 font-label text-[9px] lg:text-[10px] uppercase tracking-[0.18em] transition-colors duration-200 rounded-lg ${activeSection === l.section
                     ? 'text-primary-teal'
                     : 'text-on-surface-variant hover:text-on-surface'
                   }`}>
-                {activeSection === l.href.replace('#', '') && (
+                {activeSection === l.section && (
                   <motion.span
                     layoutId="nav-pill"
                     className="absolute inset-x-0 bottom-0 h-1"

@@ -105,9 +105,9 @@ export default function BookConsultation() {
   };
 
   const fields = [
-    { id: 'name', label: 'Full Name', type: 'text', placeholder: 'Jane Doe', required: true },
-    { id: 'email', label: 'Email Address', type: 'email', placeholder: 'jane@company.com', required: true },
-    { id: 'company', label: 'Company', type: 'text', placeholder: 'Acme Corp (optional)', required: false },
+    { id: 'name', label: 'Full Name', type: 'text', required: true },
+    { id: 'email', label: 'Email Address', type: 'email', required: true },
+    { id: 'company', label: 'Company (Optional)', type: 'text', required: false },
   ];
 
   return (
@@ -177,9 +177,9 @@ export default function BookConsultation() {
                   >
                     Send us a message
                   </h2>
-                  <p className="font-body text-on-surface-variant text-md sm:text-sm md:text-sm lg:text-[15px] xl:text-base">
+                  {/* <p className="font-body text-on-surface-variant text-md sm:text-sm md:text-sm lg:text-[15px] xl:text-base">
                     Fill in the details below and we'll get back to you within 24 hours.
-                  </p>
+                  </p> */}
                 </div>
 
                 {status === 'success' ? (
@@ -223,8 +223,8 @@ export default function BookConsultation() {
                 ) : (
                   /* ── Form ── */
                   <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    {/* Inline fields for name + email */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Contact fields */}
+                    <div className="grid grid-cols-1 gap-5">
                       {fields.slice(0, 2).map((field) => (
                         <div key={field.id} className="flex flex-col gap-2">
                           <label
@@ -313,7 +313,7 @@ export default function BookConsultation() {
                         className="font-label uppercase tracking-[0.18em] text-on-surface-variant"
                         style={{ fontSize: '13px' }}
                       >
-                        Your Objective <span className="text-primary-teal">*</span>
+                        How can we help? <span className="text-primary-teal">*</span>
                       </label>
                       <textarea
                         id="message"
@@ -324,7 +324,7 @@ export default function BookConsultation() {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('message')}
                         onBlur={() => setFocusedField(null)}
-                        placeholder="We are looking to automate our data ingestion pipeline and reduce manual handoffs across our team…"
+                        // placeholder="We are looking to automate our data ingestion pipeline and reduce manual handoffs across our team…"
                         className="w-full font-body text-on-surface text-md sm:text-md md:text-md lg:text-[15px] xl:text-base px-4 py-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-on-surface-variant/40 resize-none"
                         style={{
                           background: 'rgba(10,14,16,0.6)',
@@ -384,12 +384,12 @@ export default function BookConsultation() {
                       )}
                     </button>
 
-                    <p
+                    {/* <p
                       className="font-body text-on-surface-variant text-center leading-relaxed"
                       style={{ fontSize: '12  px' }}
                     >
                       By submitting, you agree to our privacy policy. We never share your data.
-                    </p>
+                    </p> */}
                   </form>
                 )}
               </div>
