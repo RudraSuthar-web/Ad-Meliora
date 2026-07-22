@@ -3,8 +3,6 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 
 /* ── Reusable fade-up animation wrapper ── */
 function FadeUp({ children, delay = 0, className = '' }) {
@@ -92,14 +90,22 @@ export default function BookConsultation() {
     setErrors({});
     setStatus('loading');
     try {
-      await addDoc(collection(db, 'consultations'), {
-        ...formData,
-        timestamp: new Date(),
+      const response = await fetch('/api/book-consultation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
       setStatus('success');
       setFormData({ name: '', email: '', company: '', message: '' });
     } catch (err) {
-      console.error('Error adding document: ', err);
+      console.error('Error submitting consultation: ', err);
       setStatus('error');
     }
   };
