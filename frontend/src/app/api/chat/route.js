@@ -1,20 +1,40 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { Langfuse } from 'langfuse'
+
+// Initialize Langfuse client
+const langfuse = new Langfuse({
+  publicKey: process.env.LANGFUSE_PUBLIC_KEY,
+  secretKey: process.env.LANGFUSE_SECRET_KEY,
+  baseUrl: process.env.LANGFUSE_BASE_URL || 'http://localhost:3001',
+  flushAt: 1,
+  flushInterval: 1000,
+})
 
 export async function POST(request) {
+  const startTime = Date.now()
+  let trace = null
+  
   try {
-    const { messages } = await request.json();
+    const { messages, sessionId, userId } = await request.json()
 
-    const apiKey = process.env.GROQ_API_KEY;
+    // Create a trace for this conversation turn
+    trace = langfuse.trace({
+      name: 'chatbot-conversation',
+      sessionId: sessionId || `session-${Date.now()}`,
+      userId: userId || 'anonymous',
+      metadata: { source: 'ad-meliora-chatbot' },
+      tags: ['production'],
+    })
+
+    const apiKey = process.env.GROQ_API_KEY
     if (!apiKey) {
+      trace.update({ level: 'ERROR', statusMessage: 'GROQ_API_KEY not set' })
       return NextResponse.json(
         { error: 'GROQ_API_KEY environment variable is not set.' },
         { status: 500 }
-      );
+      )
     }
 
-    // Format client message history into Groq's chat completion messages format
-    // Client message structure: { role: 'user' | 'bot', text: '...' }
-    // Groq message structure: { role: 'system' | 'user' | 'assistant', content: '...' }
     const systemPrompt = `You are a helpful, professional, and sophisticated AI assistant for Ad Meliora (Latin for "towards better things"), a premium enterprise AI automation agency.
 
 Your main goal is to introduce users to Ad Meliora's capabilities, build trust, answer questions about our services and methodology, and guide qualified leads to book a consultation.
@@ -46,19 +66,29 @@ CHATBOT GUIDELINES:
         role: msg.role === 'assistant' || msg.role === 'bot' || msg.role === 'model' ? 'assistant' : 'user',
         content: msg.text || ''
       }))
-    ];
+    ]
 
+    // Create a generation span for the LLM call
+    const generation = trace.generation({
+      name: 'groq-completion',
+      model: 'gpt-oss-120b',
+      input: groqMessages,
+      metadata: { provider: 'groq' },
+    })
+
+    // Current working models on Groq (as of 2025)
     const modelsToTry = [
-      'llama-3.1-8b-instant',
-      'llama-3.1-70b-versatile',
-      'llama3-8b-8192'
-    ];
+      'openai/gpt-oss-120b',
+      'openai/gpt-oss-20b',
+      'meta-llama/Llama-3.3-70B-Instruct'
+    ]
 
-    let response = null;
-    let lastErrorText = '';
+    let response = null
+    let lastErrorText = ''
 
     for (const model of modelsToTry) {
       try {
+        generation.update({ model })
         response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -71,34 +101,52 @@ CHATBOT GUIDELINES:
             temperature: 0.5,
             max_tokens: 1024
           })
-        });
+        })
 
         if (response.ok) {
-          break;
+          break
         } else {
-          lastErrorText = await response.text();
-          console.warn(`Groq model ${model} failed:`, lastErrorText);
+          lastErrorText = await response.text()
+          console.warn(`Groq model ${model} failed:`, lastErrorText)
         }
       } catch (err) {
-        lastErrorText = err.message || String(err);
-        console.warn(`Error connecting to Groq model ${model}:`, err);
+        lastErrorText = err.message || String(err)
+        console.warn(`Error connecting to Groq model ${model}:`, err)
       }
     }
 
     if (!response || !response.ok) {
-      console.error('All Groq API models failed. Last error:', lastErrorText);
+      generation.end({ level: 'ERROR', statusMessage: lastErrorText })
+      console.error('All Groq API models failed. Last error:', lastErrorText)
       return NextResponse.json(
         { error: `Groq API call failed: ${lastErrorText}` },
         { status: response ? response.status : 500 }
-      );
+      )
     }
 
-    const data = await response.json();
-    const botText = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+    const data = await response.json()
+    const botText = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response."
 
-    return NextResponse.json({ text: botText });
+    // End generation with output + usage
+    generation.end({
+      output: botText,
+      usage: {
+        promptTokens: data.usage?.prompt_tokens || 0,
+        completionTokens: data.usage?.completion_tokens || 0,
+        totalTokens: data.usage?.total_tokens || 0,
+      },
+      metadata: { model: data.model },
+    })
+
+    // Ensure traces are sent before response returns
+    await langfuse.flushAsync()
+
+    return NextResponse.json({ text: botText })
   } catch (error) {
-    console.error('Error in chat route handler:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Chat route error:', error)
+    if (trace) trace.update({ level: 'ERROR', statusMessage: error.message })
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  } finally {
+    await langfuse.flushAsync()
   }
 }
