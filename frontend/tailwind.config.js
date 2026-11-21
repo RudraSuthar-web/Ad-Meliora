@@ -15,7 +15,17 @@ module.exports = {
       '2xl':'1536px',
     },
     extend: {
+      boxShadow: {
+        brut:      "4px 4px 0 #141414",
+        "brut-lg": "6px 6px 0 #141414",
+        "brut-sm": "2px 2px 0 #141414",
+      },
       colors: {
+        "canvas": "#d9d9d9",
+        "ink":    "#141414",
+        "brut-cyan": "#12b5d9",
+        "brut-cyan-bright": "#17e6ff",
+        "sun":    "#ffc857",
         "primary":                "#70d4ef",
         "primary-teal":           "#0b8da6",
         "primary-teal-dim":       "#00687b",
@@ -86,6 +96,7 @@ module.exports = {
         "base":                "8px",
       },
       fontFamily: {
+        "brut":       ["Space Grotesk", "sans-serif"],
         "display":    ["Poetsen One", "sans-serif"],
         "body":       ["Poltawski Nowy", "serif"],
         "label":      ["Pontano Sans", "sans-serif"],

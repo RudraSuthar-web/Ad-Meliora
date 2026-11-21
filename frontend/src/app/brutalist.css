@@ -1,0 +1,12 @@
+/* ─── Neo-brutalist design system ─────────────────── */
+.brut-page { background:#d9d9d9; color:#141414; font-family:'Space Grotesk',sans-serif; }
+.brut-card { background:#fff; border:2px solid #141414; border-radius:16px; box-shadow:4px 4px 0 #141414; transition:transform .2s ease, box-shadow .2s ease; }
+.brut-card:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 #141414; }
+.brut-btn { display:inline-flex; align-items:center; gap:.6rem; border:2px solid #141414; border-radius:999px; box-shadow:4px 4px 0 #141414; font-weight:700; text-transform:uppercase; letter-spacing:.02em; transition:transform .15s ease, box-shadow .15s ease; }
+.brut-btn:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 #141414; }
+.brut-btn:active { transform:translate(4px,4px); box-shadow:0 0 0 #141414; }
+.sticker { filter:drop-shadow(2px 0 0 #ffc857) drop-shadow(-2px 0 0 #ffc857) drop-shadow(0 2px 0 #ffc857) drop-shadow(0 -2px 0 #ffc857); }
+@keyframes brut-marquee { from { transform:translateX(0);} to { transform:translateX(-50%);} }
+.brut-marquee { animation:brut-marquee 28s linear infinite; }
+@keyframes brut-bob { 0%,100%{ transform:translateY(0) rotate(0);} 50%{ transform:translateY(-10px) rotate(1.5deg);} }
+.brut-bob { animation:brut-bob 5s ease-in-out infinite; }

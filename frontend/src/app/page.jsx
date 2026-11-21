@@ -1,403 +1,227 @@
 'use client';
-import React, { useRef, useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
 import Image from 'next/image';
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-} from 'framer-motion';
+import { motion } from 'framer-motion';
 import Footer from '../components/footer';
-import { FadeUp } from '../functions/fadeup';
-import { StaggerContainer } from '../functions/staggercontainer';
 import Chatbot from '../components/chatbot';
-import Splash from '../components/splash';
+import { WHATSAPP_URL } from '../components/header';
+import { FadeUp } from '../functions/fadeup';
 
-/* ── Stagger children wrapper ── */
-
-
-const cardVariant = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+/* Swap these paths when the individual mascot poses are added to /public/mascots */
+const MASCOT = {
+  wave: '/robot-mascot.png',
+  laptop: '/robot-mascot.png',
+  think: '/robot-mascot.png',
+  sit: '/robot-mascot.png',
+  stand: '/robot-mascot.png',
+  jump: '/robot-mascot.png',
 };
 
-/* ─── Data ─────────────────────────────────────────── */
-const SERVICES = [
-  {
-    step: '01',
-    title: 'Consult & Align',
-    desc: 'Understanding your exact business model, pain points, and objectives to build a clear transformation roadmap.',
-    accent: false,
-  },
-  {
-    step: '02',
-    title: 'Build & Architect',
-    desc: 'Crafting bespoke intelligent systems and automation pipelines engineered for reliability and long-term expansion.',
-    accent: true,
-  },
-  {
-    step: '03',
-    title: 'Integrate & Scale',
-    desc: 'Deploying solutions smoothly into your workflow with active monitoring to drive measurable scale and efficiency.',
-    accent: false,
-  },
+const MARQUEE = [
+  'AI Workflows',
+  'Custom LLM Apps',
+  'Next-Gen Automations',
+  'High-Converting Landing Pages',
+  'Prototype to Prod in 7 Days',
+  'Fast Execution',
 ];
 
-/* ─── Page ─────────────────────────────────────────── */
+const SERVICES = [
+  { n: '01', title: 'Conversion-First Websites', desc: 'Turn passive lurkers into paying customers in under 3 seconds flat.', color: 'bg-sun' },
+  { n: '02', title: 'AI Automations & Bots', desc: 'Automate 80% of client inquiries and lead qualification 24/7.', color: 'bg-brut-cyan' },
+  { n: '03', title: 'Brand Identity & Polish', desc: 'Sharp visuals and messaging that make your brand impossible to forget.', color: 'bg-brut-cyan' },
+];
+
+const PROJECTS = [
+  { name: 'Thrill Hikers', tag: 'E-Commerce', tagColor: 'bg-sun', metric: '+$120k first month', bg: 'from-slate-700 via-slate-500 to-orange-500', headline: 'ASCEND EVERYTHING.' },
+  { name: 'Clay & Glaze', tag: 'DTC Artisan', tagColor: 'bg-brut-cyan', metric: '3.8x checkout conversion', bg: 'from-amber-100 via-stone-200 to-orange-300', headline: 'Ceramic Studio' },
+];
+
+const STEPS = [
+  { n: 1, title: 'Brief', pose: 'sit', desc: 'Tell us what you need. One quick WhatsApp voice note or message is enough to get moving. No 20-page scoping docs.' },
+  { n: 2, title: 'Build', pose: 'stand', desc: 'Design, code, and AI wired together — with transparent staging links and live Loom updates along the way.' },
+  { n: 3, title: 'Launch', pose: 'jump', desc: 'You go live with zero headaches. We stick around for post-launch speed tuning, conversions, and maintenance.' },
+];
+
+const TEAM = [
+  { initials: 'SS', name: 'Angel', role: 'Head of Design & Conversion Systems', color: 'bg-sun' },
+  { initials: 'SA', name: 'Dhairya', role: 'Head of Code, Next.js & AI Automations', color: 'bg-brut-cyan' },
+  { initials: 'SS', name: 'Rudra', role: 'Head of Design & Conversion Systems', color: 'bg-sun' },
+  { initials: 'SA', name: 'Hardik', role: 'Head of Code, Next.js & AI Automations', color: 'bg-brut-cyan' },
+];
+
+const Mascot = ({ pose, className = '', priority = false }) => (
+  <div className={`relative ${className}`}>
+    <Image
+      src={MASCOT[pose]}
+      alt="Ad Meliora robot mascot"
+      fill
+      sizes="(max-width: 768px) 80vw, 40vw"
+      priority={priority}
+      className="object-contain sticker"
+    />
+  </div>
+);
+
+const Title = ({ children }) => (
+  <h2 className="font-brut font-bold uppercase text-3xl md:text-4xl text-ink tracking-tight">{children}</h2>
+);
+
+const IconBtn = ({ icon }) => (
+  <span className="w-8 h-8 rounded-full border-2 border-ink bg-canvas shadow-brut-sm flex items-center justify-center">
+    <span className="material-symbols-outlined text-base">{icon}</span>
+  </span>
+);
+
 export default function Page() {
-  const [splashComplete, setSplashComplete] = useState(false);
-  const [showRobot, setShowRobot] = useState(false);
-
-  const heroRef = useRef(null);
-  const footerRef = useRef(null);
-  const footerInView = useInView(footerRef, { amount: 0.1 });
-
-  // Scroll animations for fixed/sticky mascot
-  const { scrollY } = useScroll();
-  // Centered at scroll 0 (translation 0), moves to left column (translation -30vw) at scroll 500
-  const robotX = useTransform(scrollY, [0, 500], ['0vw', '-30vw']);
-  const robotScale = useTransform(scrollY, [0, 500], [1.1, 0.82]);
-  
-  // Non-linear rotation to make the flat sides of the 2D image spin by instantly
-  const robotRotateY = useTransform(
-    scrollY,
-    [0, 150, 250, 350, 450, 500],
-    [0, 15, 165, 195, 345, 360]
-  );
-
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-
-  const handleSplashComplete = () => {
-    setSplashComplete(true);
-    setTimeout(() => {
-      setShowRobot(true);
-    }, 200); // Quick trigger right as splash vanishes
-  };
-
   return (
-    <main className="overflow-x-hidden" style={{ background: '#0a0e10' }}>
-      {/* 3-Sec Splash Screen */}
-      {!splashComplete && <Splash onComplete={handleSplashComplete} />}
-
+    <main className="brut-page overflow-x-hidden relative">
       <Chatbot />
 
-      {/* Sticky Robot (Desktop only) */}
-      {showRobot && (
-        <motion.div
-          style={{ x: robotX, perspective: 1200 }}
-          animate={{ opacity: footerInView ? 0 : 1 }}
-          transition={{ duration: 0.3 }}
-          className="hidden md:flex fixed left-0 top-0 w-screen h-screen pointer-events-none z-30 items-center justify-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.4, y: 80 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            style={{
-              scale: robotScale,
-              rotateY: robotRotateY,
-              transformStyle: 'preserve-3d',
-            }}
-            transition={{ type: 'spring', stiffness: 75, damping: 14 }}
-            className="relative w-[32vw] h-[32vw] max-w-[450px] max-h-[450px]"
-          >
-            {/* Nested floating/swaying loop to animate the mascot with a wavy 3D gesture */}
-            <motion.div
-              animate={{
-                y: [0, -12, 0],
-                rotateZ: [0, -2.5, 2.5, 0],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              style={{ transformStyle: 'preserve-3d' }}
-              className="w-full h-full relative"
-            >
-              {/* Front Face (Original Mascot) */}
-              <div
-                style={{
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  position: 'absolute',
-                  inset: 0,
-                }}
-              >
-                <Image
-                  src="/robot-mascot.png"
-                  alt="Robot mascot front"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 34vw"
-                  priority
-                  className="object-contain drop-shadow-[0_0_28px_rgba(11,141,166,0.35)]"
-                />
-              </div>
-
-              {/* Back Face (Backside Mascot) */}
-              <div
-                style={{
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  position: 'absolute',
-                  inset: 0,
-                }}
-              >
-                <Image
-                  src="/mascot_backside.png"
-                  alt="Robot mascot back"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 34vw"
-                  priority
-                  className="object-contain drop-shadow-[0_0_28px_rgba(11,141,166,0.35)]"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Hero Section */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center text-center px-5 sm:px-8 overflow-hidden pt-28 pb-16"
-      >
-        {/* Grid background */}
-        <div className="grid-bg absolute inset-0 pointer-events-none" />
-
-        {/* Ambient glows */}
-        <div className="teal-glow absolute -top-32 -left-32 w-[600px] h-[600px] opacity-30 pointer-events-none" />
-        <div className="gold-glow absolute top-1/2 right-0 w-[500px] h-[500px] opacity-20 pointer-events-none" />
-        <div className="teal-glow absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] opacity-10 pointer-events-none" />
-
-        {/* Responsive Content Container */}
-        <motion.div
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 w-full max-w-[1400px] mx-auto pt-24 px-6 sm:px-12 flex flex-col items-center justify-center min-h-[70vh]"
-        >
-          {/* Symmetrical Columns: Left Cards - Robot Space - Right Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-4 items-center w-full">
-            
-            {/* Left Column: Floating Service Cards */}
-            <div className="col-span-1 md:col-span-5 hidden md:flex flex-col gap-10 text-right items-end pr-10">
-              {[
-                { title: 'Custom AI Solutions', desc: 'Tailored models aligned with your business context.' },
-                { title: 'Autonomous AI Agents', desc: 'Self-correcting workflows executing complex tasks.' },
-                { title: 'LLM & GenAI Integration', desc: 'Deploying state-of-the-art models inside your software.' }
-              ].map((card, idx) => (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, x: idx === 1 ? -78 : -30 }}
-                  animate={{ opacity: 1, x: idx === 1 ? -48 : 0 }}
-                  transition={{ duration: 0.6, delay: 0.15 + idx * 0.1, ease: 'easeOut' }}
-                  className="glass-card p-5 rounded-2xl border border-white/5 flex flex-col text-right gap-1 hover:border-primary-teal/20 transition-all duration-300 w-full max-w-[360px]"
-                  style={{ background: 'rgba(17, 22, 25, 0.45)' }}
-                >
-                  <span className="font-display text-[15px] text-on-surface font-semibold">{card.title}</span>
-                  <span className="font-body text-[12px] text-on-surface-variant mt-0.5 leading-normal">{card.desc}</span>
-                </motion.div>
-              ))}
+      <div className="max-w-[1280px] mx-auto px-5 md:px-10">
+        {/* ── Hero ── */}
+        <section className="pt-28 md:pt-32 pb-16 grid md:grid-cols-2 gap-8 items-center min-h-[640px]">
+          <div>
+            <h1 className="font-brut font-bold text-white text-5xl sm:text-6xl lg:text-7xl leading-[1.05] tracking-tight">
+              uncover hidden{' '}
+              <span className="inline-block bg-ink text-brut-cyan-bright px-3 my-1 rounded-md shadow-brut">inefficiencies</span>{' '}
+              <span className="block mt-2">And maximize productivity</span>
+            </h1>
+            <p className="mt-6 max-w-md text-xs font-semibold uppercase tracking-wide text-ink">
+              Get clarity on your AI potential. We bridge the gap between complex data and actionable automation — with zero disruption to your stack.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="brut-btn bg-brut-cyan-bright text-ink text-xs px-5 py-3 no-underline">
+                <span className="material-symbols-outlined text-base">chat</span> Message Us on WhatsApp →
+                <span className="bg-ink text-white text-[10px] px-2 py-0.5 rounded">Instant reply</span>
+              </a>
+              <a href="#work" className="brut-btn bg-ink text-white text-xs px-5 py-3 no-underline">
+                Explore Shipped Builds ↓
+              </a>
             </div>
-
-            {/* Middle Column: Robot Mascot (Placeholder space on desktop, inline image on mobile) */}
-            <div className="col-span-1 md:col-span-2 flex justify-center items-center h-[260px] sm:h-[300px] md:h-[350px]">
-              {/* Inline Robot Mascot for Mobile only */}
-              {showRobot && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5, y: 50 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ type: 'spring', stiffness: 75, damping: 14 }}
-                  className="block md:hidden relative w-[220px] h-[220px]"
-                >
-                  <Image
-                    src="/robot-mascot.png"
-                    alt="Robot mascot"
-                    fill
-                    sizes="220px"
-                    priority
-                    className="object-contain drop-shadow-[0_0_20px_rgba(11,141,166,0.35)]"
-                  />
-                </motion.div>
-              )}
-            </div>
-
-            {/* Right Column: Floating Service Cards */}
-            <div className="col-span-1 md:col-span-5 hidden md:flex flex-col gap-10 text-left items-start pl-10">
-              {[
-                { title: 'Tech Consulting & Strategy', desc: 'Navigating adoption surface with structured roadmaps.' },
-                { title: 'Data Intelligence & Analytics', desc: 'Mining business velocity out of raw database inputs.' },
-                { title: 'Full-Stack Development', desc: 'Engineering robust software to back integration layers.' }
-              ].map((card, idx) => (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, x: idx === 1 ? 78 : 30 }}
-                  animate={{ opacity: 1, x: idx === 1 ? 48 : 0 }}
-                  transition={{ duration: 0.6, delay: 0.15 + idx * 0.1, ease: 'easeOut' }}
-                  className="glass-card p-5 rounded-2xl border border-white/5 flex flex-col text-left gap-1 hover:border-primary-teal/20 transition-all duration-300 w-full max-w-[360px]"
-                  style={{ background: 'rgba(17, 22, 25, 0.45)' }}
-                >
-                  <span className="font-display text-[15px] text-on-surface font-semibold">{card.title}</span>
-                  <span className="font-body text-[12px] text-on-surface-variant mt-0.5 leading-normal">{card.desc}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Mobile Stack of Cards */}
-            <div className="col-span-1 md:hidden flex flex-col gap-4 mt-6 w-full max-w-sm mx-auto">
-              {[
-                { title: 'Custom AI Solutions', label: 'Custom AI' },
-                { title: 'Autonomous AI Agents', label: 'Agents' },
-                { title: 'LLM & GenAI Integration', label: 'GenAI' },
-                { title: 'Tech Consulting & Strategy', label: 'Consulting' },
-                { title: 'Data Intelligence & Analytics', label: 'Data' },
-                { title: 'Full-Stack Development', label: 'Development' }
-              ].map((card) => (
-                <div
-                  key={card.title}
-                  className="glass-card p-4 rounded-xl border border-white/5 flex justify-between items-center text-left"
-                >
-                  <span className="font-display text-[13.5px] text-on-surface font-semibold">{card.title}</span>
-                  <span className="hud-chip" style={{ fontSize: '6px', padding: '0.12rem 0.4rem' }}>{card.label}</span>
-                </div>
-              ))}
-            </div>
-
           </div>
-        </motion.div>
-      </section>
-
-      {/* Process (Automation Pipeline) */}
-      <section
-        id="solutions"
-        className="py-24 sm:py-28 md:py-32 lg:py-36 px-5 sm:px-8 md:px-12 md:pl-[40vw] max-w-[1400px] mx-auto relative"
-      >
-        {/* Section glow */}
-        <div className="teal-glow hidden lg:block absolute top-1/2 -right-48 w-[500px] h-[500px] -z-10 opacity-25 pointer-events-none" />
-
-        {/* Section header */}
-        <FadeUp className="text-center md:text-left mb-14 sm:mb-18 md:mb-20 space-y-4 sm:space-y-5">
-          <div className="hud-chip">The Automation Pipeline</div>
-          <h2 className="font-display font-normal text-on-surface"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: '1.1' }}>
-            From Signal to Scale
-          </h2>
-          <p className="font-body text-on-surface-variant leading-relaxed max-w-lg"
-            style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)' }}>
-            A proven three-phase methodology built for speed, precision, and lasting ROI.
-          </p>
-        </FadeUp>
-
-        {/* Cards */}
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 md:max-w-3xl">
-          {SERVICES.map((svc) => (
-            <motion.div
-              key={svc.title}
-              variants={cardVariant}
-              className="glass-card group relative overflow-hidden rounded-[1.75rem] sm:rounded-[2rem] p-7 sm:p-8 md:p-9 flex flex-col text-left"
-              style={svc.accent ? { background: 'rgba(11,141,166,0.04)', borderColor: 'rgba(11,141,166,0.18)' } : {}}
-            >
-              {/* Top accent glow */}
-              <div
-                className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none"
-                style={{ background: `radial-gradient(circle, ${svc.accent ? 'rgba(11,141,166,0.18)' : 'rgba(11,141,166,0.09)'} 0%, transparent 70%)` }}
-              />
-
-              {/* Step indicator and Popular badge */}
-              <div className="flex justify-between items-start mb-4">
-                <span className="font-label text-primary-teal font-semibold tracking-wider text-xs sm:text-sm border border-primary-teal/20 rounded-full px-3 py-1 bg-[#0a0e10]/60">
-                  Step {svc.step}
-                </span>
-                {svc.accent && (
-                  <div className="hud-chip animate-pulse" style={{ fontSize: '8px', padding: '0.18rem 0.6rem' }}>
-                    <span className="w-1 h-1 rounded-full bg-primary-teal flex-shrink-0"
-                      style={{ boxShadow: '0 0 4px #0b8da6' }} />
-                    Active Phase
-                  </div>
-                )}
-              </div>
-
-              <h3 className="font-display font-normal text-on-surface mb-3 text-xl sm:text-2xl">
-                {svc.title}
-              </h3>
-              <p className="font-body text-on-surface-variant leading-relaxed flex-grow text-md">
-                {svc.desc}
-              </p>
-
-              {/* Bottom bar */}
-              <div className="card-bar" style={svc.accent ? { background: 'rgba(11,141,166,0.55)' } : {}} />
-            </motion.div>
-          ))}
-        </StaggerContainer>
-      </section>
-
-      {/*About*/}
-      <section
-        id="about"
-        className="py-16 sm:py-20 md:py-24 px-5 sm:px-8 md:px-12 md:pl-[40vw]"
-      >
-        <div className="max-w-[1280px] md:max-w-3xl">
-          <FadeUp>
-            <div className="glass-card relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] p-10 sm:p-14 flex flex-col text-left">
-
-              {/* Background decoration */}
-              <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
-              <div className="teal-glow absolute -top-20 -right-20 w-72 h-72 opacity-40 pointer-events-none" />
-              <div className="gold-glow absolute -bottom-20 -left-20 w-64 h-64 opacity-30 pointer-events-none" />
-
-              <div className="relative z-10 flex flex-col gap-10">
-                {/* Left Column (Who We Are) */}
-                <div className="space-y-5 sm:space-y-6">
-                  <div className="hud-chip">Who We Are</div>
-
-                  <h2
-                    className="font-display font-normal text-on-surface leading-[1.1]"
-                    style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
-                  >
-                    We bridge the gap between complex data and <span className="gradient-text">actionable automation</span>.
-                  </h2>
-
-                  <p className="font-body text-on-surface-variant leading-relaxed text-md sm:text-base">
-                    At Ad Meliora, we engineer custom AI workflow pipelines, autonomous nodes, and integration systems designed to fit your unique operational architecture. We operate on a simple premise: technology should adapt to your business processes—not the other way around. By streamlining manual bottlenecks, we empower teams to reclaim valuable time and maximize productivity.
-                  </p>
-                </div>
-
-                {/* Right Column (CTA Card) */}
-                <div className="w-full flex justify-center">
-                  <div
-                    className="p-8 sm:p-10 rounded-[1.5rem] border text-center flex flex-col items-center gap-6 w-full"
-                    style={{
-                      background: 'rgba(10,14,16,0.5)',
-                      borderColor: 'rgba(62,72,76,0.18)'
-                    }}
-                  >
-                    <h3
-                      className="font-display font-normal text-on-surface leading-snug text-xl sm:text-2xl"
-                    >
-                      Ready to reclaim your time?
-                    </h3>
-                    <p className="font-body text-on-surface-variant leading-relaxed text-sm">
-                      Partner with us to deploy seamless intelligence into your stack with zero disruption.
-                    </p>
-                    <Link href="/book-consultation"
-                      className="btn-primary gap-2.5 px-7 py-4 sm:px-8 sm:py-4.5 text-[11px] sm:text-xs w-full">
-                      Contact Us
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* Footer Wrapper for Ref detection */}
-      <div ref={footerRef}>
-        <Footer />
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} className="brut-bob">
+            <Mascot pose="wave" priority className="w-full h-[360px] md:h-[520px]" />
+          </motion.div>
+        </section>
       </div>
 
+      {/* ── Marquee ── */}
+      <div className="-rotate-1 bg-brut-cyan-bright border-y-2 border-ink overflow-hidden py-3 shadow-brut">
+        <div className="brut-marquee flex w-max gap-10 whitespace-nowrap">
+          {[...MARQUEE, ...MARQUEE, ...MARQUEE, ...MARQUEE].map((m, i) => (
+            <span key={i} className="text-xs font-bold uppercase text-ink flex items-center gap-2">
+              <span className="w-1 h-4 bg-ink inline-block" /> {m}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-[1280px] mx-auto px-5 md:px-10">
+        {/* ── What We Do ── */}
+        <section id="what-we-do" className="pt-20 pb-16 scroll-mt-8">
+          <FadeUp><Title>What We Do</Title></FadeUp>
+          <div className="mt-8 grid md:grid-cols-2 gap-10 items-center">
+            <Mascot pose="laptop" className="w-full h-[320px] md:h-[400px]" />
+            <div className="flex flex-col gap-6">
+              {SERVICES.map((s, i) => (
+                <FadeUp key={s.n} delay={i * 0.1}>
+                  <div className="brut-card p-5">
+                    <div className="flex items-center gap-3">
+                      <span className={`${s.color} border-2 border-ink rounded-md px-2 py-0.5 font-bold text-xl`}>{s.n}</span>
+                      <h3 className="font-bold uppercase text-lg">{s.title}</h3>
+                    </div>
+                    <p className="mt-2 text-sm text-ink/80">{s.desc}</p>
+                  </div>
+                </FadeUp>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Clients ── */}
+        <section id="work" className="py-16 scroll-mt-8">
+          <FadeUp><Title>What We Did For Clients</Title></FadeUp>
+          <div className="mt-8 grid md:grid-cols-2 gap-8">
+            {PROJECTS.map((p, i) => (
+              <FadeUp key={p.name} delay={i * 0.1}>
+                <div className="brut-card overflow-hidden">
+                  <div className="flex items-center justify-between px-3 py-2 border-b-2 border-ink text-[10px] font-bold uppercase text-primary-teal">
+                    <span>Selected work — no fluff, just numbers</span>
+                    <span className={`${p.tagColor} text-ink border-2 border-ink rounded px-2 py-0.5`}>{p.tag}</span>
+                  </div>
+                  <div className={`relative h-56 bg-gradient-to-br ${p.bg} flex items-center justify-center`}>
+                    <span className="font-brut font-bold text-3xl text-white drop-shadow-[2px_2px_0_#141414] text-center px-4">{p.headline}</span>
+                    <span className="absolute bottom-3 left-3 bg-ink text-white text-xs px-2 py-1 rounded">{p.metric}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-4">
+                    <h3 className="font-bold uppercase text-lg">{p.name}</h3>
+                    <span className="w-10 h-10 rounded-full border-2 border-ink bg-[#fbf3e4] shadow-brut-sm flex items-center justify-center text-xl">↗</span>
+                  </div>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </section>
+
+        {/* ── How We Do ── */}
+        <section id="process" className="py-16 scroll-mt-8">
+          <FadeUp><Title>How We Do</Title></FadeUp>
+          <div className="mt-8 grid md:grid-cols-3 gap-8">
+            {STEPS.map((s, i) => (
+              <FadeUp key={s.n} delay={i * 0.1}>
+                <p className="text-sm font-semibold text-ink/40 mb-2">Step {s.n}</p>
+                <div className="brut-card p-5 h-full flex flex-col">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-brut-cyan border-2 border-ink flex items-center justify-center font-bold text-sm">{s.n}</span>
+                    <h3 className="font-bold uppercase">{s.title}</h3>
+                  </div>
+                  <p className="mt-3 text-xs text-ink/80">{s.desc}</p>
+                  <Mascot pose={s.pose} className="w-full h-48 mt-auto" />
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Makers Direct ── */}
+        <section id="dms" className="py-16 scroll-mt-8">
+          <FadeUp><Title>Makers Direct</Title></FadeUp>
+          <div className="mt-8 grid md:grid-cols-2 gap-6">
+            {TEAM.map((t, i) => (
+              <FadeUp key={t.name} delay={i * 0.08}>
+                <div className="brut-card p-4 flex items-center gap-3">
+                  <span className={`${t.color} w-11 h-11 rounded-full border-2 border-ink shadow-brut-sm flex items-center justify-center font-bold`}>{t.initials}</span>
+                  <div className="flex-1">
+                    <h3 className="font-bold uppercase leading-tight">{t.name}</h3>
+                    <p className="text-[10px] font-semibold text-ink/70">{t.role}</p>
+                  </div>
+                  <IconBtn icon="photo_camera" />
+                  <IconBtn icon="share" />
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </section>
+
+        {/* ── CTA ── */}
+        <section className="py-16 grid md:grid-cols-2 gap-8 items-center">
+          <Mascot pose="think" className="w-full h-[360px] md:h-[460px]" />
+          <div className="text-center md:text-left">
+            <h2 className="font-brut font-bold uppercase text-brut-cyan text-5xl lg:text-6xl leading-[0.95] tracking-tight">
+              Got a problem?<br />Let’s build it.
+            </h2>
+            <p className="mt-6 text-sm font-semibold max-w-md mx-auto md:mx-0">
+              We bridge the gap between complex data and actionable automation. At Ad Meliora, we engineer custom AI.
+            </p>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="brut-btn mt-8 bg-brut-cyan text-ink text-xs px-6 py-3 no-underline">
+              <span className="material-symbols-outlined text-base">chat</span> Message us on WhatsApp
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <Footer />
     </main>
   );
 }

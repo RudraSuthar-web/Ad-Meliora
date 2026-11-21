@@ -1,5 +1,6 @@
 import React from 'react';
 import './globals.css';
+import './brutalist.css';
 import Header from '../components/header';
 
 export const metadata = {
@@ -21,6 +22,10 @@ export default function Layout({ children }) {
         {/* Brand fonts: Poetsen One (display) · Poltawski Nowy (body) · Pontano Sans (label/UI) */}
         <link
           href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Poltawski+Nowy:ital,wght@0,400..700;1,400..700&family=Pontano+Sans:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
